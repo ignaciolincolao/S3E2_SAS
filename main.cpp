@@ -1,3 +1,6 @@
+#include "ExplorationCriterion.h"
+#include "AcceptanceCriterion.h"
+
 #include <iostream>
 #include <cmath>
 #include <ctime>
@@ -42,8 +45,6 @@ double S(const int currentSolution[],const int alumnosSep[], int totalVuln);
 double costCupo(const int currentSolution[],const int cupoArray[]);
 void newSolution(int currentSolution[],const int previousSolution[]);
 double newSolution_v2(int n_students,int n_colegios,int totalVuln,int aluxcol[],int aluVulxCol[],int cupoArray[],double **distMat, int currentSolution[],const double ptr_alpha[]);
-int acepta(double costPrevious, double costCurrent);
-double p(double costPrevious,double costCurrent);
 void assignSchoolToArray(int previousSolution[], int bestSolution[], int currentSolution[], Info_colegio *ptr_colegios, Info_alu *ptr_students, int cupoArray[]);
 void calcDist(Info_colegio *ptr_colegios, Info_alu *ptr_students, double **distMat);
 void shuffle(int[],int,std::uniform_int_distribution<int>);
@@ -53,8 +54,8 @@ void shuffle(int[],int,std::uniform_int_distribution<int>);
 /// Parametros de configuración Default
 ///////////////////////////////////////////////////
 
-
-double coolingRate = 0.97; // Tasa de enfriamiento
+/*
+double coolingRate = 0.9999; // Tasa de enfriamiento
 double temp = 10000000000; // Temperatura Inicial
 double min_temp =0.0000000000009;// 0.00000009; // Minima temperatura que puede llegar
 double alpha1 = 15; // Alpha de distancia
@@ -63,6 +64,19 @@ double alpha3 = 25; // Alpha de costocupo
 double max_temp = pow(10,300);
 double k_recalentamiento = 0.994;
 int seed=841;
+*/
+
+double coolingRate = 0.99998; // Tasa de enfriamiento
+double temp = 100000; // Temperatura Inicial
+double min_temp =0.00000009;// 0.00000009; // Minima temperatura que puede llegar
+double alpha1 = 15; // Alpha de distancia
+double alpha2 = 30; // Alpha de segregación
+double alpha3 = 25; // Alpha de costocupo
+double max_temp = pow(10,300);
+double k_recalentamiento = 0.994;
+int seed=841;
+
+
 
 std::string ruta_save = "./save/"; // Ruta para guardar los archivos
 
@@ -123,37 +137,6 @@ int main(int argc, char *argv[]) {
     Info_colegio *ptr_colegios;
     Info_alu *ptr_students;
 
-
-    /*
-    ///////////////////////////////////////////////////
-    /// Instancia Mongocxx
-    /// Conecta a la base de datos y su collection
-    ///////////////////////////////////////////////////
-
-    mongocxx::instance inst{};
-    mongocxx::client conn{mongocxx::uri{}};
-    auto collection_escuelas = conn["RSP_S3E2"]["colegios_utm"];
-    n_colegios = collection_escuelas.count_documents({}) ;
-    Info_colegio colegios[n_colegios];
-    Info_colegio *ptr_colegios = &colegios[0];
-    mongocxx::cursor cursor1 = collection_escuelas.find({});
-    for(auto doc : cursor1) {
-        bsoncxx::document::element element_esc= doc["rbd"];
-        ptr_colegios->rbd = element_esc.get_int32();
-        element_esc= doc["latitude"];
-        ptr_colegios->latitude = element_esc.get_double();
-        element_esc= doc["longitude"];
-        ptr_colegios->longitude = element_esc.get_double();
-        element_esc= doc["alumnos"];
-        ptr_colegios->num_alu = element_esc.get_int32();
-        element_esc= doc["prioritario"];
-        ptr_colegios->prioritario = element_esc.get_int32();
-        ptr_colegios++;
-    }
-    ptr_colegios = &colegios[0]; // vuelve el puntero al inicio
-
-     */
-
     ///////////////////////////////////////////////////
     /// Datos colegios
     /// Lee el archivo linea por linea y luego lo agrega al arreglo de estructura Info_colegio
@@ -182,32 +165,7 @@ int main(int argc, char *argv[]) {
 
     ptr_colegios = &colegios[0]; // vuelve el puntero al inicio
     info_school.close();
-    /*
-    ///////////////////////////////////////////////////
-    /// Obtiene la lista de los alumnos
-    ///////////////////////////////////////////////////
 
-    auto collection_student = conn["RSP_S3E2"]["alumnos_utm"];
-    n_students = collection_student.count_documents({}); // se asume que el collection estan solo los estudiantes de la comuna y al año correspondiente
-    Info_alu students[n_students];
-    Info_alu *ptr_students = &students[0];
-    mongocxx::cursor cursor2 = collection_student.find({});
-    for(auto doc2 : cursor2) {
-        bsoncxx::document::element element_estudent= doc2["latitude"];
-        ptr_students->latitude = element_estudent.get_double();
-        element_estudent= doc2["longitude"];
-        ptr_students->longitude = element_estudent.get_double();
-        element_estudent= doc2["rbd"];
-        ptr_students->rbd = element_estudent.get_int32();
-        element_estudent= doc2["sep"];
-        ptr_students->sep = element_estudent.get_int32();
-        if(ptr_students->sep == 1 ) {
-            totalVuln++;
-        }
-        ptr_students++;
-    }
-    ptr_students = &students[0]; // vuelve el puntero al inicio
-    */
     ///////////////////////////////////////////////////
     /// Datos Alumnos
     /// Lee el archivo linea por linea y luego lo agrega al arreglo de estructura info_student
@@ -255,7 +213,7 @@ int main(int argc, char *argv[]) {
     double **distMat=nullptr;
     int *cupoArray=nullptr;
     int *alumnosSep=nullptr;
-    int aluchange,colchange;
+    
     int count=0;
 
     previousSolution = (int *)malloc(sizeof(int)*n_students);
@@ -369,8 +327,8 @@ int main(int argc, char *argv[]) {
     ///////////////////////////////////////////////////
     /// Genera arreglos que contendran valores del 0 hasta n_students y n_colegios
     ///////////////////////////////////////////////////
-    int *shuffle_student = new int[n_students];
-    int *shuffle_colegios = new int[n_colegios];
+    int *shuffle_student = (int *)malloc(sizeof(int)*n_students);
+    int *shuffle_colegios = (int *)malloc(sizeof(int)*n_colegios);
     for (int i = 0; i < n_students; i++) {
         shuffle_student[i] = i;
     }
@@ -452,29 +410,7 @@ int main(int argc, char *argv[]) {
         ///////////////////////////////////////////////////
         ///  Selecciona aleatoria mente a los alumnos
         ///////////////////////////////////////////////////
-
-        shuffle(shuffle_student,1,dist);
-        shuffle(shuffle_colegios,1,dist2);
-        aluchange=shuffle_student[0];
-        colchange = shuffle_colegios[0];
-
-
-
-        //ELimina el estudiante de la escuela actual
-        aluxcol[currentSolution[aluchange]]-=1;
-        aluVulxCol[currentSolution[aluchange]]-=alumnosSep[aluchange];
-        //Asigna al estudiante a la nueva escuela
-        currentSolution[aluchange] = colchange;
-        aluxcol[colchange]+=1;
-        aluVulxCol[colchange]+=alumnosSep[aluchange];
-
-
-        // Obtiene el costo Actual
-
-        costCurrentSolution = newSolution_v2(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha);
-
-
-
+        costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
         if(costCurrentSolution<0.00){
 
             std::cout << "distancia: " << meanDist(currentSolution,distMat) << "\n";
@@ -483,6 +419,7 @@ int main(int argc, char *argv[]) {
             std::cout << costCurrentSolution;
             exit(1);
         }
+
         // Verifica si el costo actual es mejor que la mejor solución
         // en el caso que el costo actual es menor a la mejor solución, acepta la solución y los
         // guarda en el estado como mejor solución
@@ -517,7 +454,7 @@ int main(int argc, char *argv[]) {
         // En el caso que el la solución actual sea mas alta intenta aceptar una peor solución en base
         // a la función acepta
         else{
-            if(acepta(costPreviousSolution,costCurrentSolution)==1){
+            if(metropolisAC1(costPreviousSolution,costCurrentSolution)==1){
                 for(x=0;x<n_students;x++){
                     previousSolution[x]=currentSolution[x];
                 }
@@ -710,32 +647,8 @@ void newSolution(int currentSolution[],const int previousSolution[]){
 
 }
 
-///////////////////////////////////////////////////
-/// Función de aceptación en base a mayor temperatura mayor probabilidad que acepte a una solución peor
-/// en caso de menor temperatura menor probabibilidad que acepte una solución peor.
-///////////////////////////////////////////////////
 
-int acepta(double costPrevious, double costCurrent){;
-    std::uniform_real_distribution<double> dist_accepta(0.0, 1.0);
-    if(costCurrent < costPrevious){
-        return 1;
-    }
-    else{
-        double valor=p(costPrevious,costCurrent);
-        double nrandom=dist_accepta(mt);
-        if(nrandom<valor){
-            return 1;
-        }
-        else{
-            return 0;
-        }
-    }
-}
-double p(double costPrevious,double costCurrent){
-    double po;
-    po = exp(-(costCurrent-costPrevious)/((double)temp));
-    return po;
-}
+
 
 ///////////////////////////////////////////////////
 /// Asigna a las soluciones la escuela actual Solo se utiliza al inicio
@@ -811,7 +724,7 @@ double newSolution_v2(int n_students,int n_colegios,int totalVuln,int aluxcol[],
     return (double)((ptr_alpha[0]*var1)+(ptr_alpha[1]*var2)+(ptr_alpha[2]*var3));
 }
 
-void shuffle(int values[], const int max_change, std::uniform_int_distribution<int> distri) {
+void shuffle(int *values, const int max_change, std::uniform_int_distribution<int> distri) {
     int randvalue1,randvalue2,tem_value;
     for (int i = 0; i<max_change; i++) {
         randvalue1 = distri(mt);

@@ -4,7 +4,12 @@ project(s3e2_sas VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-add_executable(s3e2_sas main.cpp alumnos_utm.txt colegios_utm.txt)
+file(GLOB files
+     "*.h"
+     "*.cpp"
+)
+
+add_executable(s3e2_sas ${files} alumnos_utm.txt colegios_utm.txt)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/alumnos_utm.txt
     ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
