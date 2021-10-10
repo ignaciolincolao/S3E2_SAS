@@ -1,16 +1,19 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(s3e2_sas VERSION 0.1.0)
 
-include(CTest)
+
+include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+)
 enable_testing()
 
-file(GLOB files
-     "*.h"
-     "*.cpp"
+file(GLOB all_SRCS
+    "${PROJECT_SOURCE_DIR}/src/*.cpp"
+    "${PROJECT_SOURCE_DIR}/src/*.c"
 )
 
-add_executable(s3e2_sas ${files} alumnos_utm.txt colegios_utm.txt)
-
+add_executable(s3e2_sas ${all_SRCS} alumnos_utm.txt colegios_utm.txt)
+set_target_properties(s3e2_sas PROPERTIES LINKER_LANGUAGE CXX)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/alumnos_utm.txt
     ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
