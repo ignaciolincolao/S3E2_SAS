@@ -1,82 +1,29 @@
-#include "ExplorationCriterion.h"
-#include "AcceptanceCriterion.h"
 
-#include <iostream>
-#include <cmath>
-#include <ctime>
-#include <cstdlib>
-#include <cstdint>
-#include <stdio.h>
-#include <sstream>
-#include <random>
-#include <fstream>
-#include <iomanip>
-#include <chrono>
-#include <iostream>
-#include <string>
+#include <sas.hpp>
+#include <ExplorationCriterion.hpp>
+#include <AcceptanceCriterion.hpp>
 
 int n_students, n_colegios;
 
-///////////////////////////////////////////////////
-/// Estructura de datos de los colegios.
-///////////////////////////////////////////////////
-struct Info_colegio{
-    double latitude = 0.0;
-    double longitude = 0.0;
-    int num_alu = 0;
-    int rbd = 0;
-    int prioritario = 0;
-};
-///////////////////////////////////////////////////
-/// Estructura de alumnos
-///////////////////////////////////////////////////
-struct Info_alu{
-    int rbd = 0;
-    int sep = 0;
-    double latitude = 0.0;
-    double longitude = 0.0;
-};
+
 ///////////////////////////////////////////////////
 /// Funciones generales
 ///////////////////////////////////////////////////
-double calCosto(int currentSolution[], double **distMat, const double ptr_alpha[], int alumnosSep[], int totalVuln, int cupoArray[]);
-double meanDist(const int currentSolution[], double  **distMat);
-double S(const int currentSolution[],const int alumnosSep[], int totalVuln);
-double costCupo(const int currentSolution[],const int cupoArray[]);
-void newSolution(int currentSolution[],const int previousSolution[]);
-double newSolution_v2(int n_students,int n_colegios,int totalVuln,int aluxcol[],int aluVulxCol[],int cupoArray[],double **distMat, int currentSolution[],const double ptr_alpha[]);
-void assignSchoolToArray(int previousSolution[], int bestSolution[], int currentSolution[], Info_colegio *ptr_colegios, Info_alu *ptr_students, int cupoArray[]);
-void calcDist(Info_colegio *ptr_colegios, Info_alu *ptr_students, double **distMat);
-void shuffle(int[],int,std::uniform_int_distribution<int>);
-
 
 ///////////////////////////////////////////////////
 /// Parametros de configuración Default
 ///////////////////////////////////////////////////
 
-/*
-double coolingRate = 0.9999; // Tasa de enfriamiento
-double temp = 10000000000; // Temperatura Inicial
-double min_temp =0.0000000000009;// 0.00000009; // Minima temperatura que puede llegar
-double alpha1 = 15; // Alpha de distancia
-double alpha2 = 30; // Alpha de segregación
-double alpha3 = 25; // Alpha de costocupo
-double max_temp = pow(10,300);
-double k_recalentamiento = 0.994;
-int seed=841;
-*/
 
-double coolingRate = 0.99998; // Tasa de enfriamiento
-double temp = 100000; // Temperatura Inicial
+double coolingRate; //= 0.98; // Tasa de enfriamiento
+double temp; // Temperatura Inicial
 double min_temp =0.00000009;// 0.00000009; // Minima temperatura que puede llegar
 double alpha1 = 15; // Alpha de distancia
 double alpha2 = 30; // Alpha de segregación
 double alpha3 = 25; // Alpha de costocupo
 double max_temp = pow(10,300);
 double k_recalentamiento = 0.994;
-int seed=841;
-
-
+int seed;
 
 std::string ruta_save = "./save/"; // Ruta para guardar los archivos
 
@@ -94,15 +41,21 @@ double max_dist=0.0;
 double min_dist=0.0;
 double init_dist=0.0;
 
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-int main(int argc, char *argv[]) {
+
+double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
+    temp = t;
+    coolingRate = cRate;
     time_t hora_actual;
     struct tm * time_info;
     char timestr[20];
     int x=0,z=0;
     int totalVuln=0;
-
+    seed = time(NULL);
+    if(!seedRandom){
+       seed=841; 
+    }
+    mt.seed(seed);
+    //srand(time(NULL));
     ///////////////////////////////////////////////////
     /// Genera archivo de almacenamiento de datos
     ///////////////////////////////////////////////////
@@ -111,6 +64,7 @@ int main(int argc, char *argv[]) {
     strftime(timestr, sizeof(timestr), "%Y-%m-%d T:%H-%M", time_info);
 
     std::string prefijo_save = std::string(timestr);
+    /*
     if (argc>1) {
         alpha1 = std::stod(argv[1]); // Alpha de distanciathreadIdx.x
         alpha2 = std::stod(argv[2]); // Alpha de segregación
@@ -127,7 +81,7 @@ int main(int argc, char *argv[]) {
         max_temp= pow(10,300);
         seed= std::stoi(argv[10]);
     }
-    mt.seed(seed);
+    */
 
     std::ofstream info;
     std::string infotxt = "./save/" + std::string(timestr) +"-info.txt"; // concatenar
@@ -475,12 +429,12 @@ int main(int argc, char *argv[]) {
         ///////////////////////////////////////////////////
         /// Largo de temperatura
         ///////////////////////////////////////////////////
-        if(c_accepta>=n_colegios){
+        if(c_accepta>=n_colegios*len1){
             temp=temp*(coolingRate);
             //std::cout << "Enfriamiento " << temp << " CostZ " << costCurrentSolution << " bestZ " << costBestSolution << " count_rechaso " << count_rechaso << " count_reheating " << count_reheating <<"\n";
             c_accepta=0;
         }
-        if(count%((n_colegios*2))==0){
+        if(count%((n_colegios*len2))==0){
             temp=temp*(coolingRate);
             //std::cout << "recalentamiento " << temp << " CostZ " << costCurrentSolution << " bestZ " << costBestSolution << " count_rechaso " << count_rechaso << " count_reheating " << count_reheating <<"\n";
         }
@@ -548,9 +502,13 @@ int main(int argc, char *argv[]) {
     studentscsv.close();
     schoolcsv.close();
     std::cout << "-------------- Archivos Guardado ------------------" << "\n";
-    return (EXIT_SUCCESS);
+    return (costBestSolution);
 
 }
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////
 /// Calcula el costo

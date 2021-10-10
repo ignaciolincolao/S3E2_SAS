@@ -1,4 +1,4 @@
-#include "ExplorationCriterion.h"
+#include <ExplorationCriterion.hpp>
 
 double solutionNE1(int n_students,
         int n_colegios,
