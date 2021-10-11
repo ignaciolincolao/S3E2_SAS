@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <random>
 
+using namespace std;
+
 extern std::mt19937 mt;
 extern double temp;
 int metropolisAC1(double costPrevious, double costCurrent);

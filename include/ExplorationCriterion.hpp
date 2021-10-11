@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <cstring>
 
-
+using namespace std;
 
 extern std::mt19937 mt;
 extern std::uniform_int_distribution<int> dist;

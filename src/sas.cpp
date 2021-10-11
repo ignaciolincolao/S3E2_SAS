@@ -15,17 +15,18 @@ int n_students, n_colegios;
 ///////////////////////////////////////////////////
 
 
-double coolingRate; //= 0.98; // Tasa de enfriamiento
-double temp; // Temperatura Inicial
+double coolingRate = 0.98; // Tasa de enfriamiento
+double temp = 100000; // Temperatura Inicial
 double min_temp =0.00000009;// 0.00000009; // Minima temperatura que puede llegar
 double alpha1 = 15; // Alpha de distancia
 double alpha2 = 30; // Alpha de segregación
 double alpha3 = 25; // Alpha de costocupo
 double max_temp = pow(10,300);
 double k_recalentamiento = 0.994;
-int seed;
+int seed = 841;
 
-std::string ruta_save = "./save/"; // Ruta para guardar los archivos
+
+string ruta_save = "./save/"; // Ruta para guardar los archivos
 
 
 ///////////////////////////////////////////////////
@@ -33,10 +34,10 @@ std::string ruta_save = "./save/"; // Ruta para guardar los archivos
 ///////////////////////////////////////////////////
 
 double alpha[3]={alpha1,alpha2,alpha3}; // Valores del alpha con orden Distancia, Segregación, Costo Cupo
-std::random_device rd;
-std::mt19937 mt(rd());
-std::uniform_int_distribution<int> dist(0,0);
-std::uniform_int_distribution<int> dist2(0,0);
+random_device rd;
+mt19937 mt(rd());
+uniform_int_distribution<int> dist(0,0);
+uniform_int_distribution<int> dist2(0,0);
 double max_dist=0.0;
 double min_dist=0.0;
 double init_dist=0.0;
@@ -62,94 +63,57 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     time(&hora_actual);
     time_info = localtime(&hora_actual);
     strftime(timestr, sizeof(timestr), "%Y-%m-%d T:%H-%M", time_info);
-
-    std::string prefijo_save = std::string(timestr);
     /*
-    if (argc>1) {
-        alpha1 = std::stod(argv[1]); // Alpha de distanciathreadIdx.x
-        alpha2 = std::stod(argv[2]); // Alpha de segregación
-        alpha3 = std::stod(argv[3]); // Alpha de costocupo
-        alpha[0]=alpha1;
-        alpha[1]=alpha2;
-        alpha[2]=alpha3;
-        coolingRate = std::stod(argv[4]); // Tasa de enfriamiento
-        k_recalentamiento = std::stod(argv[5]);
-        temp = std::stod(argv[6]); // Temperatura inicial
-        min_temp = std::stod(argv[7]); // Minima temperatura que puede llegar
-        ruta_save = argv[8];
-        prefijo_save = argv[9];
-        max_temp= pow(10,300);
-        seed= std::stoi(argv[10]);
-    }
+    * Prepara archivos para guardar los datos
     */
-
-    std::ofstream info;
-    std::string infotxt = "./save/" + std::string(timestr) +"-info.txt"; // concatenar
+    string prefijo_save = string(timestr);
+    ofstream info;
+    string infotxt = "./save/" + string(timestr) +"-info.txt"; 
     info.open(infotxt);
-
-
-    Info_colegio *ptr_colegios;
-    Info_alu *ptr_students;
+    /*
+    * 
+    */
+    ofstream info_test;
+    string nameinfo_test = ruta_save + prefijo_save+"-info_test.txt"; 
+    info_test.open(nameinfo_test);
+    /*
+    * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
+    * la ejecución del algoritmo
+    */
+    ofstream info_graficos;
+    string name_info_graficos = ruta_save + prefijo_save +"-info-graficos.txt";
+    info_graficos.open(name_info_graficos);
+    /*
+    * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
+    * la ejecución del algoritmo
+    */
+    ofstream studentscsv,schoolcsv;
+    string nameCsvStudent = "./save/" + string(timestr) +"-students.csv"; // concatenar
+    studentscsv.open(nameCsvStudent);
+    studentscsv << "school,sep,latitude,longitude,count\n";
+    string nameCsvSchool = "./save/" + string(timestr) +"-school.csv"; // concatenar
+    schoolcsv.open(nameCsvSchool);
+    schoolcsv << "id,latitude,longitude,rbd\n";
 
     ///////////////////////////////////////////////////
     /// Datos colegios
     /// Lee el archivo linea por linea y luego lo agrega al arreglo de estructura Info_colegio
     ///////////////////////////////////////////////////
-    std::string line_colegios;
-    std::ifstream info_school("colegios_utm.txt"); // concatenar
-    std::getline(info_school, line_colegios);
-    n_colegios = std::stoi(line_colegios);
-    Info_colegio colegios[n_colegios];
-    ptr_colegios = &colegios[0];
-    while (std::getline(info_school, line_colegios)) {
-        std::stringstream linestream(line_colegios);
-        std::string data;
-        std::getline(linestream, data, ',');
-        ptr_colegios->rbd = std::stoi(data);
-        std::getline(linestream, data, ',');
-        ptr_colegios->latitude = std::stod(data);
-        std::getline(linestream, data, ',');
-        ptr_colegios->longitude = std::stod(data);
-        std::getline(linestream, data, ',');
-        ptr_colegios->num_alu = std::stoi(data);
-        std::getline(linestream, data, ',');
-        ptr_colegios->prioritario = std::stoi(data);
-        ptr_colegios++;
-    }
-
-    ptr_colegios = &colegios[0]; // vuelve el puntero al inicio
-    info_school.close();
+    Info_colegio *ptr_colegios;
+    vector<Info_colegio> colegios;
+    getDataSchool(colegios);
+    ptr_colegios = colegios.data();
+    n_colegios = colegios.size();
 
     ///////////////////////////////////////////////////
     /// Datos Alumnos
     /// Lee el archivo linea por linea y luego lo agrega al arreglo de estructura info_student
     ///////////////////////////////////////////////////
-    std::string line_student;
-    std::ifstream info_student("alumnos_utm.txt"); // concatenar
-
-
-    std::getline(info_student, line_student);
-    n_students = std::stoi(line_student);
-    Info_alu students[n_students];
-    ptr_students = &students[0];
-    while (std::getline(info_student, line_student)) {
-        std::stringstream linestream(line_student);
-        std::string data;
-        std::getline(linestream, data, ',');
-        ptr_students->rbd = std::stoi(data);
-        std::getline(linestream, data, ',');
-        ptr_students->latitude = std::stod(data);
-        std::getline(linestream, data, ',');
-        ptr_students->longitude = std::stod(data);
-        std::getline(linestream, data, ',');
-        ptr_students->sep = std::stoi(data);
-        if (ptr_students->sep == 1) {
-            totalVuln++;
-        }
-        ptr_students++;
-    }
-    ptr_students = &students[0]; // vuelve el puntero al inicio
-    info_student.close();
+    Info_alu *ptr_students;
+    vector<Info_alu> students;
+    getDataStudents(students,totalVuln);
+    ptr_students = students.data();
+    n_students = students.size();
 
     ///////////////////////////////////////////////////
     /// Inicializa Variables y arreglos
@@ -167,6 +131,11 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     double **distMat=nullptr;
     int *cupoArray=nullptr;
     int *alumnosSep=nullptr;
+
+    double  costBestSolution,
+        costPreviousSolution,
+        costCurrentSolution,
+        *ptr_alpha = &alpha[0];
     
     int count=0;
 
@@ -176,28 +145,8 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     distMat=(double **)malloc(sizeof(double)*n_students);
     cupoArray=(int *)malloc(sizeof(int)*n_colegios);
     alumnosSep = (int *)malloc( sizeof(int)*n_students);
-
-    ///////////////////////////////////////////////////
-    /// Asigna Información de las escuelas a best, previus y current soluciones
-    ///////////////////////////////////////////////////
-
-
-    for(x = 0; x < n_colegios; x++){
-        aluxcol[x] = colegios[x].num_alu;
-        previousAluxCol[x] = colegios[x].num_alu;
-        bestAluxCol[x] = colegios[x].num_alu;
-        aluVulxCol[x] = colegios[x].prioritario;
-        previousAluVulxCol[x] = colegios[x].prioritario;
-        bestAluVulxCol[x] = colegios[x].prioritario;
-
-    }
-    ///////////////////////////////////////////////////
-    /// Se crear un arreglo donde el el valor es la posición del estudiante sep
-    ///////////////////////////////////////////////////
-
     for(x=0; x < n_students; x++) {
         distMat[ x ]=(double *)malloc(sizeof(double)*n_colegios);
-        alumnosSep[x] = students[x].sep;
     }
 
     ///////////////////////////////////////////////////
@@ -205,77 +154,46 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     /// las escuelas tendran como identificación el indice
     /// y currentSolution tiene como indice al estudiante y el valor del indice a la escuela que asignada
     ///////////////////////////////////////////////////
+    initializeArray(aluxcol, 
+                previousAluxCol, 
+                bestAluxCol, 
+                aluVulxCol, 
+                previousAluVulxCol, 
+                bestAluVulxCol, 
+                alumnosSep,
+                students,
+                colegios);
     assignSchoolToArray(previousSolution, bestSolution, currentSolution, ptr_colegios, ptr_students, cupoArray);
     calcDist(ptr_colegios, ptr_students, distMat);
-
-    ///////////////////////////////////////////////////
-    /// Termina La fase de recolección de datos.
-    /// Es necesario crear una funcion que empareje al estudiante con la escuela correspondiente segun su puesto
-    /// en el arreglo ejemplo el 5 estudiante tiene rbd 4566 ese apunta al colegio que esta en la posicion
-    /// 20 entonces cambio el rbd del estudiante a 20
-    ///////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////
-    ///  Configuración de parametros
-    ///////////////////////////////////////////////////
-
-    double  costBestSolution,
-            costPreviousSolution,
-            costCurrentSolution,
-            *ptr_alpha = &alpha[0],
-            sumaAlpha = 0;
-
-    ///////////////////////////////////////////////////
-    /// Calcula el valor de los alpha
-    ///////////////////////////////////////////////////
-    for(x=0; x<3; x++){
-        sumaAlpha +=alpha[x];
-    }
-    for(x=0; x<3; x++){
-        alpha[x]= alpha[x]/(double)sumaAlpha;
-    }
-
-
-    ////////////////////////////////////////////////
-    ////// Hace una calculo de rango de los promedios de las distancias
-    ///////////////////////////////////////////////////
-
-    for(int i=0;i<n_students;i++){
-        for(x=0;x<n_colegios;x++){
-            if(distMat[i][x]>max_dist){
-                max_dist = distMat[i][x];
-            }
-        }
-    }
-
-    std::cout << "Max promedio dist:" << max_dist << "| Min Promedio dist: " << min_dist << "| init_dist: "<< init_dist<<"\n";
-
+    max_dist = getMaxDistance(distMat);
+    normalizedAlpha(alpha);
 
     ///////////////////////////////////////////////////
     /// Registro de datos
     ///////////////////////////////////////////////////
-
     costBestSolution=calCosto(currentSolution,distMat,ptr_alpha, alumnosSep, totalVuln, cupoArray);
-    std::cout << "--------------- Primeros datos -------------" << "\n";
-    info << "--------------- Primeros datos -------------" << "\n";
-    std::cout << "Primer costo de solución: " << costBestSolution << "\n";
-    info << "Primer costo de solución: " << costBestSolution << "\n";
     costPreviousSolution=costBestSolution;
     costCurrentSolution=costBestSolution;
-    std::cout << "Primer distancia: " << meanDist(currentSolution,distMat) << "\n";
-    info << "Primer distancia: " << meanDist(currentSolution,distMat) << "\n";
-    std::cout << "Primer Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
-    info << "Primer Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
-    std::cout << "Primer CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
-    info << "Primer CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
+    count++;
+    
+    cout << "--------------- Primeros datos -------------" << "\n";
+    cout << "Primer costo de solución: " << costBestSolution << "\n";
+    cout << "Primer distancia: " << meanDist(currentSolution,distMat) << "\n";
+    cout << "Primer Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
+    cout << "Primer CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
+
+    info      << "--------------- Primeros datos -------------" << "\n";
+    info      << "Primer costo de solución: " << costBestSolution << "\n";
+    info      << "Primer distancia: " << meanDist(currentSolution,distMat) << "\n";
+    info      << "Primer Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
+    info      << "Primer CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
 
 
     ///////////////////////////////////////////////////
     /// Generación de archivos que almacenan información de los graficos
     ///////////////////////////////////////////////////
-    std::ofstream info_graficos;
-    std::string name_info_graficos = ruta_save + prefijo_save +"-info-graficos.txt"; // concatenar
-    info_graficos.open(name_info_graficos);
+
+    
     info_graficos << count << "," << meanDist(currentSolution,distMat) << "," << S(currentSolution, alumnosSep, totalVuln) << "," << costCupo(currentSolution,cupoArray) << "," << costCurrentSolution << "," << temp << "\n";
 
     ///////////////////////////////////////////////////
@@ -293,63 +211,45 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     /// Posicion estudiantes
     ///////////////////////////////////////////////////
 
-    std::ofstream info_graficos_bestSolution;
-    std::string name_info_graficos_bestSolution = ruta_save + prefijo_save +"-info-graficos_bestSolution.txt"; // concatenar
+    ofstream info_graficos_bestSolution;
+    string name_info_graficos_bestSolution = ruta_save + prefijo_save +"-info-graficos_bestSolution.txt"; // concatenar
     info_graficos_bestSolution.open(name_info_graficos_bestSolution);
     for(x=0;x<n_students;x++){
         info_graficos_bestSolution << currentSolution[x] << ",";
     }
     info_graficos_bestSolution << "\n";
 
-
     ///////////////////////////////////////////////////
     /// Genera distribuciones para seleccionar un estudiante y una escuela al azar
     ///////////////////////////////////////////////////
 
-    dist = std::uniform_int_distribution<int>(0, n_students-1);
-    dist2 = std::uniform_int_distribution<int>(0, n_colegios-1);
-
-
-    ///////////////////////////////////////////////////
-    /// Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
-    /// la ejecución del algoritmo
-    ///////////////////////////////////////////////////
-    std::ofstream studentscsv,schoolcsv;
-    std::string nameCsvStudent = "./save/" + std::string(timestr) +"-students.csv"; // concatenar
-    studentscsv.open(nameCsvStudent);
-    studentscsv << "school,sep,latitude,longitude,count\n";
-    std::string nameCsvSchool = "./save/" + std::string(timestr) +"-school.csv"; // concatenar
-    schoolcsv.open(nameCsvSchool);
-    schoolcsv << "id,latitude,longitude,rbd\n";
+    dist = uniform_int_distribution<int>(0, n_students-1);
+    dist2 = uniform_int_distribution<int>(0, n_colegios-1);
 
     ///////////////////////////////////////////////////
     /// Inicio el contador de tiempo antes de iniciar el algortimo
     ///////////////////////////////////////////////////
-    auto start = std::chrono::high_resolution_clock::now();
-
-
-    double e_const=0.01;
-    int count_rechaso=0;
-
-    int count_acepta_cost=0;
-    int count_acepta_suerte=0;
+    auto start = chrono::high_resolution_clock::now();
     ///////////////////////////////////////////////////
     /// Comienza a ejecutarse el algoritmo de SA
     ///////////////////////////////////////////////////
 
 
-    std::vector<double> vector_costCurrentSolution;
-    std::vector<double> vector_meanDist;
-    std::vector<double> vector_segregation;
-    std::vector<double> vector_costoCupo;
-    std::vector<double> vector_temp;
-    std::vector<int> vector_count;
+    vector<double> vector_costCurrentSolution;
+    vector<double> vector_meanDist;
+    vector<double> vector_segregation;
+    vector<double> vector_costoCupo;
+    vector<double> vector_temp;
+    vector<int> vector_count;
+
+    double e_const=0.01;
+    int count_rechaso=0;
     int reheating = 0;
     int c_accepta = 0;
-    count++;
     int valmaxheating=n_colegios;
     int count_reheating = 0;
     double bestTemp = 0;
+
 
     while(temp > min_temp){
 
@@ -367,17 +267,17 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
         costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
         if(costCurrentSolution<0.00){
 
-            std::cout << "distancia: " << meanDist(currentSolution,distMat) << "\n";
-            std::cout << "Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
-            std::cout << "CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
-            std::cout << costCurrentSolution;
+            cout << "distancia: " << meanDist(currentSolution,distMat) << "\n";
+            cout << "Segregación: " << S(currentSolution, alumnosSep, totalVuln) << "\n";
+            cout << "CostoCupo: " << costCupo(currentSolution,cupoArray) << "\n";
+            cout << costCurrentSolution;
             exit(1);
         }
 
         // Verifica si el costo actual es mejor que la mejor solución
         // en el caso que el costo actual es menor a la mejor solución, acepta la solución y los
         // guarda en el estado como mejor solución
-        //std::cout << "CostoCurreent segundo" << costCurrentSolution << "\n";
+        //cout << "CostoCurreent segundo" << costCurrentSolution << "\n";
 
 
 
@@ -431,12 +331,10 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
         ///////////////////////////////////////////////////
         if(c_accepta>=n_colegios*len1){
             temp=temp*(coolingRate);
-            //std::cout << "Enfriamiento " << temp << " CostZ " << costCurrentSolution << " bestZ " << costBestSolution << " count_rechaso " << count_rechaso << " count_reheating " << count_reheating <<"\n";
             c_accepta=0;
         }
         if(count%((n_colegios*len2))==0){
             temp=temp*(coolingRate);
-            //std::cout << "recalentamiento " << temp << " CostZ " << costCurrentSolution << " bestZ " << costBestSolution << " count_rechaso " << count_rechaso << " count_reheating " << count_reheating <<"\n";
         }
 
 
@@ -444,25 +342,22 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
 
     }
 
-    std::cout << "cuenta acepta costo: " << count_acepta_cost << "\n";
-    std::cout << "cuenta acepta suerte: " << count_acepta_suerte << "\n";
-
     ///////////////////////////////////////////////////
     /// Obtiene el tiempo de ejecución
     ///////////////////////////////////////////////////
-    auto end = std::chrono::high_resolution_clock::now();
-    double time_taken = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    auto end = chrono::high_resolution_clock::now();
+    double time_taken = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
     time_taken *= 1e-9;
 
     for(x=0;x<n_students;x++){
         info_graficos_bestSolution << bestSolution[x] << ",";
     }
-    info_graficos_bestSolution.close();
+    
 
     for(x=0; x<vector_count.size(); x++){
-        info_graficos << vector_count.at(x) << "," << vector_meanDist.at(x) << "," << vector_segregation.at(x) << "," << vector_costoCupo.at(x) << "," << vector_costCurrentSolution.at(x) << "," << std::fixed << vector_temp.at(x) << std::setprecision(13) << "\n";
+        info_graficos << vector_count.at(x) << "," << vector_meanDist.at(x) << "," << vector_segregation.at(x) << "," << vector_costoCupo.at(x) << "," << vector_costCurrentSolution.at(x) << "," << fixed << vector_temp.at(x) << setprecision(13) << "\n";
     }
-    info_graficos.close();
+
 
 
 
@@ -470,38 +365,45 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     /// Almacenamiento de datos
     ///////////////////////////////////////////////////
 
-    std::cout << "--------------- Resultado Final ----------------" << "\n";
-    info  << "--------------- Resultado Final ----------------" << "\n";
-    std::cout << "Numero de Ciclos " << count << "\n";
-    info  << "Numero de Ciclos " << count << "\n";
-    std::cout << "Costo de la solución previa: " << costPreviousSolution << "\n";
+    cout << "--------------- Resultado Final ----------------" << "\n";
+    cout << "Numero de Ciclos " << count << "\n";
+    cout << "Costo de la solución previa: " << costPreviousSolution << "\n";
+    cout << "Costo de la mejor solución: " << costBestSolution << "\n";
+    cout << "Costo de la solución actual: " << costCurrentSolution << "\n";
+    cout << "Tiempo de ejecución de SA: " << fixed << time_taken << setprecision(9) << "\n";
+    cout << "distancia: " << meanDist(bestSolution,distMat) << "\n";
+    cout << "Segregación: " << S(bestSolution, alumnosSep, totalVuln) << "\n";
+    cout << "CostoCupo: " << costCupo(bestSolution,cupoArray) << "\n";
+    cout << "--------------- Finalizo con exito ----------------" << "\n";
+
+
+    info << "--------------- Resultado Final ----------------" << "\n";
+    info << "Numero de Ciclos " << count << "\n";
     info << "Costo de la solución previa: " << costPreviousSolution << "\n";
-    std::cout << "Costo de la mejor solución: " << costBestSolution << "\n";
     info << "Costo de la mejor solución: " << costBestSolution << "\n";
-    std::cout << "Costo de la solución actual: " << costCurrentSolution << "\n";
     info << "Costo de la solución actual: " << costCurrentSolution << "\n";
-    std::cout << "Tiempo de ejecución de SA: " << std::fixed << time_taken << std::setprecision(9) << "\n";
-    info << "Tiempo de ejecución de SA: " << std::fixed << time_taken << std::setprecision(9) << "\n";
-    std::cout << "distancia: " << meanDist(bestSolution,distMat) << "\n";
+    info << "Tiempo de ejecución de SA: " << fixed << time_taken << setprecision(9) << "\n";
     info << "distancia: " << meanDist(bestSolution,distMat) << "\n";
-    std::cout << "Segregación: " << S(bestSolution, alumnosSep, totalVuln) << "\n";
     info << "Segregación: " << S(bestSolution, alumnosSep, totalVuln) << "\n";
-    std::cout << "CostoCupo: " << costCupo(bestSolution,cupoArray) << "\n";
     info << "CostoCupo: " << costCupo(bestSolution,cupoArray) << "\n";
-    std::cout << "--------------- Finalizo con exito ----------------" << "\n";
     info << "--------------- Finalizo con exito ----------------" << "\n";
 
-    std::ofstream info_test;
-    std::string nameinfo_test = ruta_save + prefijo_save+"-info_test.txt"; // concatenar
-    info_test.open(nameinfo_test);
-    info_test << std::fixed << time_taken << std::setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << std::fixed << temp << std::setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
-    info_test.close();
 
-    std::cout << "-------------- Guardando Archivos /cmake-build-dbug-save -----------------" << "\n";
+    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
+
+    info_graficos_bestSolution.close();
+    cout << ".";
+    info_graficos.close();
+    cout << ".";
+    info_test.close();
     info.close();
+    cout << ".";
     studentscsv.close();
+    cout << ".\n";
     schoolcsv.close();
-    std::cout << "-------------- Archivos Guardado ------------------" << "\n";
+    cout << " Archivos Guardado" << "\n";
+
+
     return (costBestSolution);
 
 }
@@ -515,11 +417,11 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
 ///////////////////////////////////////////////////
 double calCosto(int currentSolution[], double **distMat, const double ptr_alpha[], int alumnosSep[], int totalVuln, int cupoArray[]){
     double var1 = meanDist(currentSolution,distMat)/max_dist;
-    //std::cout << "distancia: " << var1 << "\n";
+    //cout << "distancia: " << var1 << "\n";
     double var2 = S(currentSolution, alumnosSep, totalVuln);
-    //std::cout << "Segregación: " << var2 << "\n";
+    //cout << "Segregación: " << var2 << "\n";
     double var3 = costCupo(currentSolution,cupoArray);
-    //std::cout << "CostoCupo: " << var3 << "\n";
+    //cout << "CostoCupo: " << var3 << "\n";
     return (double)((ptr_alpha[0]*var1)+(ptr_alpha[1]*var2)+(ptr_alpha[2]*var3));
 }
 
@@ -532,7 +434,7 @@ double meanDist(const int currentSolution[], double  **distMat){
         sumDist+=distMat[i][currentSolution[i]]; // distMat[estudiante][escuela]
     }
     double mean=sumDist/double(n_students);
-    //std::cout << "Numero de estudiantes: " << n_student << "  |  Suma de distancias:" << sumDist << "\n";
+    //cout << "Numero de estudiantes: " << n_student << "  |  Suma de distancias:" << sumDist << "\n";
     return mean;
 }
 
@@ -586,12 +488,12 @@ double costCupo(const int currentSolution[],const int cupoArray[]){
 ///////////////////////////////////////////////////
 
 void newSolution(int currentSolution[],const int previousSolution[]){
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> dist(0, n_students);
-    std::random_device rd2;
-    std::mt19937 mt2(rd2());
-    std::uniform_int_distribution<int> dist2(0, n_colegios);
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_int_distribution<int> dist(0, n_students);
+    random_device rd2;
+    mt19937 mt2(rd2());
+    uniform_int_distribution<int> dist2(0, n_colegios);
     int selectStudent=dist(mt);
     int selectSchool = dist2(mt2);
     for(int x=0; x<n_students; x++){
@@ -674,15 +576,15 @@ double newSolution_v2(int n_students,int n_colegios,int totalVuln,int aluxcol[],
     }
     totalcostCupo = totalcostCupo/n_colegios;
     double var1 = (sumDist/double(n_students))/max_dist;
-    //std::cout << var1 << "\n";
+    //cout << var1 << "\n";
     double var2 = totalSesc;
-    //std::cout << var2 << "\n";
+    //cout << var2 << "\n";
     double var3 = totalcostCupo;
-    //std::cout << var3 << "\n";
+    //cout << var3 << "\n";
     return (double)((ptr_alpha[0]*var1)+(ptr_alpha[1]*var2)+(ptr_alpha[2]*var3));
 }
 
-void shuffle(int *values, const int max_change, std::uniform_int_distribution<int> distri) {
+void shuffle(int *values, const int max_change, uniform_int_distribution<int> distri) {
     int randvalue1,randvalue2,tem_value;
     for (int i = 0; i<max_change; i++) {
         randvalue1 = distri(mt);
@@ -693,5 +595,105 @@ void shuffle(int *values, const int max_change, std::uniform_int_distribution<in
     }
 }
 
+void getDataSchool(vector<Info_colegio> &colegios){
+    string line_colegios;
+    ifstream info_school("colegios_utm.txt"); // concatenar
+    int cx = 0;
+    while (getline(info_school, line_colegios)) {
+        stringstream linestream(line_colegios);
+        string data;
+        colegios.push_back(Info_colegio());
+        getline(linestream, data, ',');
+        colegios[cx].rbd = stoi(data);
+        getline(linestream, data, ',');
+        colegios[cx].latitude = stod(data);
+        getline(linestream, data, ',');
+        colegios[cx].longitude = stod(data);
+        getline(linestream, data, ',');
+        colegios[cx].num_alu = stoi(data);
+        getline(linestream, data, ',');
+        colegios[cx].prioritario = stoi(data);
+        cx++;
+    }
+    info_school.close();
+}
+
+void getDataStudents(vector<Info_alu> &students, int &totalVuln)
+{
+    string line_student;
+    ifstream info_student("alumnos_utm.txt"); // concatenar
+    int cx = 0;
+    while (getline(info_student, line_student)) {
+        stringstream linestream(line_student);
+        string data;
+        students.push_back(Info_alu());
+        getline(linestream, data, ',');
+        students[cx].rbd = stoi(data);
+        getline(linestream, data, ',');
+        students[cx].latitude = stod(data);
+        getline(linestream, data, ',');
+        students[cx].longitude = stod(data);
+        getline(linestream, data, ',');
+        students[cx].sep = stoi(data);
+        if (students[cx].sep == 1) {
+            totalVuln++;
+        }
+        cx++;
+
+    }
+    info_student.close();
+}
+
+////////////////////////////////////////////////
+////// Obtiene la maxima distancia que un estudiante podria llegar a recorrer
+///////////////////////////////////////////////////
+double getMaxDistance(double **distMat){
+    double max = 0;
+    for(int i=0;i<n_students;i++){
+        for(int x=0;x<n_colegios;x++){
+            if(distMat[i][x]>max){
+                max = distMat[i][x];
+            }
+        }
+    }
+    return max;
+}
+
+///////////////////////////////////////////////////
+/// Calcula el valor de los alpha
+///////////////////////////////////////////////////
+void normalizedAlpha(double alpha[3])
+{
+    double sumaAlpha = 0.0;
+    for(int x=0; x<3; x++){
+        sumaAlpha +=alpha[x];
+    }
+    for(int x=0; x<3; x++){
+        alpha[x]= alpha[x]/(double)sumaAlpha;
+    }
+}
+
+
+///////////////////////////////////////////////////
+/// Asigna Información de las escuelas a best, previus y current soluciones
+///////////////////////////////////////////////////
+void initializeArray(int *aluxcol, int *previousAluxCol, int *bestAluxCol, int *aluVulxCol, int *previousAluVulxCol, int *bestAluVulxCol, int *alumnosSep, vector<Info_alu> &students,vector<Info_colegio> &colegios)
+{
+    for(int x = 0; x < n_colegios; x++){
+        aluxcol[x] = colegios[x].num_alu;
+        previousAluxCol[x] = colegios[x].num_alu;
+        bestAluxCol[x] = colegios[x].num_alu;
+        aluVulxCol[x] = colegios[x].prioritario;
+        previousAluVulxCol[x] = colegios[x].prioritario;
+        bestAluVulxCol[x] = colegios[x].prioritario;
+
+    }
+    ///////////////////////////////////////////////////
+    /// Se crear un arreglo donde el el valor es la posición del estudiante sep
+    ///////////////////////////////////////////////////
+    for(int x=0; x < n_students; x++) {
+        alumnosSep[x] = students[x].sep;
+    }
+}
 
 

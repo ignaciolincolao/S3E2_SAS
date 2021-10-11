@@ -69,10 +69,10 @@ double solutionNE3(int n_students,
     {
         for(int j=0; j < nt; j++)
         {
-            std::memcpy(c_aluxcol,aluxcol,sizeof(int)*n_colegios);
-            std::memcpy(c_aluVulxCol,aluVulxCol,sizeof(int)*n_colegios);
-            std::memcpy(c_currentSolution,currentSolution,sizeof(int)*n_students);
-            std::memcpy(c_alumnosSep,alumnosSep,sizeof(int)*n_students);
+            memcpy(c_aluxcol,aluxcol,sizeof(int)*n_colegios);
+            memcpy(c_aluVulxCol,aluVulxCol,sizeof(int)*n_colegios);
+            memcpy(c_currentSolution,currentSolution,sizeof(int)*n_students);
+            memcpy(c_alumnosSep,alumnosSep,sizeof(int)*n_students);
 
             aluchange=shuffle_student[i];
             colchange = shuffle_colegios[j];

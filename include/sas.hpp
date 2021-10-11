@@ -17,7 +17,7 @@
 #include <iostream>
 #include <string>
 
-
+using namespace std;
 
 ///////////////////////////////////////////////////
 /// Estructura de datos de los colegios.
@@ -59,24 +59,11 @@ double newSolution_v2(int n_students,int n_colegios,int totalVuln,int aluxcol[],
 void assignSchoolToArray(int previousSolution[], int bestSolution[], int currentSolution[], Info_colegio *ptr_colegios, Info_alu *ptr_students, int cupoArray[]);
 void calcDist(Info_colegio *ptr_colegios, Info_alu *ptr_students, double **distMat);
 void shuffle(int[],int,std::uniform_int_distribution<int>);
-
-
-///////////////////////////////////////////////////
-/// Parametros de configuración Default
-///////////////////////////////////////////////////
-
-/*
-double coolingRate = 0.9999; // Tasa de enfriamiento
-double temp = 10000000000; // Temperatura Inicial
-double min_temp =0.0000000000009;// 0.00000009; // Minima temperatura que puede llegar
-double alpha1 = 15; // Alpha de distancia
-double alpha2 = 30; // Alpha de segregación
-double alpha3 = 25; // Alpha de costocupo
-double max_temp = pow(10,300);
-double k_recalentamiento = 0.994;
-int seed=841;
-*/
-
+void getDataSchool(std::vector<Info_colegio> &colegios);
+void getDataStudents(std::vector<Info_alu> &students, int &totalVuln);
+double getMaxDistance(double **distMat);
+void normalizedAlpha(double alpha[3]);
+void initializeArray(int *aluxcol, int *previousAluxCol, int *bestAluxCol, int *aluVulxCol, int *previousAluVulxCol, int *bestAluVulxCol, int *alumnosSep, std::vector<Info_alu> &students,std::vector<Info_colegio> &colegios);
 
 
 #endif

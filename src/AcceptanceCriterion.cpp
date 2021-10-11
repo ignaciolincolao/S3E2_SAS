@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////
 
 int metropolisAC1(double costPrevious, double costCurrent){
-    std::uniform_real_distribution<double> dist_accepta(0.0, 1.0);
+    uniform_real_distribution<double> dist_accepta(0.0, 1.0);
     if(costCurrent < costPrevious){
         return 1;
     }
@@ -36,7 +36,7 @@ double p(double costPrevious,double costCurrent){
 *
 */
 int metropolisAC3(double costPrevious, double costCurrent){
-    std::uniform_real_distribution<double> dist_accepta(0.0, 1.0);
+    uniform_real_distribution<double> dist_accepta(0.0, 1.0);
     double Th=0.001;
     if(costCurrent < costPrevious){
         return 1;
@@ -44,7 +44,7 @@ int metropolisAC3(double costPrevious, double costCurrent){
     else{
         double rel_ae =(costCurrent - costPrevious)/ costPrevious;
         if(rel_ae <=costCurrent*Th){
-            std::cout << "paso: "<< rel_ae << " | "<< costCurrent*Th << std::endl;
+            cout << "paso: "<< rel_ae << " | "<< costCurrent*Th << endl;
             double valor=p(costPrevious,costCurrent);
             double nrandom=dist_accepta(mt);
             if(nrandom<valor){
