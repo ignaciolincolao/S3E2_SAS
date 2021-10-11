@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/sas.hpp
+iostream
+-
+cmath
+-
+ctime
+-
+cstdlib
+-
+cstdint
+-
+stdio.h
+-
+sstream
+-
+random
+-
+fstream
+-
+iomanip
+-
+chrono
+-
+iostream
+-
+string
+-
+
+/home/ignacio/Proyectos/S3E2_SAS/src/main.cpp
+sas.hpp
+-
+iostream
+-
+

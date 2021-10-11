@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/ignacio/Proyectos/S3E2_SAS/build",
+  "command": "/bin/clang++-10   -I/home/ignacio/Proyectos/S3E2_SAS/include  -O3 -DNDEBUG   -o CMakeFiles/s3e2_sas.dir/src/AcceptanceCriterion.cpp.o -c /home/ignacio/Proyectos/S3E2_SAS/src/AcceptanceCriterion.cpp",
+  "file": "/home/ignacio/Proyectos/S3E2_SAS/src/AcceptanceCriterion.cpp"
+},
+{
+  "directory": "/home/ignacio/Proyectos/S3E2_SAS/build",
+  "command": "/bin/clang++-10   -I/home/ignacio/Proyectos/S3E2_SAS/include  -O3 -DNDEBUG   -o CMakeFiles/s3e2_sas.dir/src/ExplorationCriterion.cpp.o -c /home/ignacio/Proyectos/S3E2_SAS/src/ExplorationCriterion.cpp",
+  "file": "/home/ignacio/Proyectos/S3E2_SAS/src/ExplorationCriterion.cpp"
+},
+{
+  "directory": "/home/ignacio/Proyectos/S3E2_SAS/build",
+  "command": "/bin/clang++-10   -I/home/ignacio/Proyectos/S3E2_SAS/include  -O3 -DNDEBUG   -o CMakeFiles/s3e2_sas.dir/src/main.cpp.o -c /home/ignacio/Proyectos/S3E2_SAS/src/main.cpp",
+  "file": "/home/ignacio/Proyectos/S3E2_SAS/src/main.cpp"
+},
+{
+  "directory": "/home/ignacio/Proyectos/S3E2_SAS/build",
+  "command": "/bin/clang++-10   -I/home/ignacio/Proyectos/S3E2_SAS/include  -O3 -DNDEBUG   -o CMakeFiles/s3e2_sas.dir/src/sas.cpp.o -c /home/ignacio/Proyectos/S3E2_SAS/src/sas.cpp",
+  "file": "/home/ignacio/Proyectos/S3E2_SAS/src/sas.cpp"
+}
+]

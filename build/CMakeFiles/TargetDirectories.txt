@@ -1,0 +1,6 @@
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/edit_cache.dir
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/test.dir
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/package_source.dir
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/rebuild_cache.dir
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/package.dir
+/home/ignacio/Proyectos/S3E2_SAS/build/CMakeFiles/s3e2_sas.dir

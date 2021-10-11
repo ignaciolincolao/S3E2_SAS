@@ -1,0 +1,1 @@
+/bin/clang++-10  -O3 -DNDEBUG  -rdynamic CMakeFiles/s3e2_sas.dir/src/AcceptanceCriterion.cpp.o CMakeFiles/s3e2_sas.dir/src/ExplorationCriterion.cpp.o CMakeFiles/s3e2_sas.dir/src/main.cpp.o CMakeFiles/s3e2_sas.dir/src/sas.cpp.o  -o s3e2_sas 
