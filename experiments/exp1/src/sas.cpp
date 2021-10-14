@@ -3,78 +3,36 @@
 #include <ExplorationCriterion.hpp>
 #include <AcceptanceCriterion.hpp>
 
-int n_students, n_colegios;
-
-
-///////////////////////////////////////////////////
-/// Funciones generales
-///////////////////////////////////////////////////
-
-///////////////////////////////////////////////////
-/// Parametros de configuración Default
-///////////////////////////////////////////////////
-
-
-double coolingRate = 0.98; // Tasa de enfriamiento
-double temp = 100000; // Temperatura Inicial
-double min_temp =0.00000009;// 0.00000009; // Minima temperatura que puede llegar
-double alpha1 = 15; // Alpha de distancia
-double alpha2 = 30; // Alpha de segregación
-double alpha3 = 25; // Alpha de costocupo
-double max_temp = pow(10,300);
-double k_recalentamiento = 0.994;
-int seed = 841;
-
-
-string ruta_save = "./save/"; // Ruta para guardar los archivos
 
 
 ///////////////////////////////////////////////////
 /// Variables globales.
 ///////////////////////////////////////////////////
 
-double alpha[3]={alpha1,alpha2,alpha3}; // Valores del alpha con orden Distancia, Segregación, Costo Cupo
-random_device rd;
-mt19937 mt(rd());
-uniform_int_distribution<int> dist(0,0);
-uniform_int_distribution<int> dist2(0,0);
-double max_dist=0.0;
-double min_dist=0.0;
-double init_dist=0.0;
 
 
-double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
-    temp = t;
-    coolingRate = cRate;
-    time_t hora_actual;
-    struct tm * time_info;
-    char timestr[20];
+
+double sasFunc() {
     int x=0,z=0;
     int totalVuln=0;
-    seed = time(NULL);
-    if(!seedRandom){
-       seed=841; 
-    }
-    mt.seed(seed);
+
     //srand(time(NULL));
     ///////////////////////////////////////////////////
     /// Genera archivo de almacenamiento de datos
     ///////////////////////////////////////////////////
-    time(&hora_actual);
-    time_info = localtime(&hora_actual);
-    strftime(timestr, sizeof(timestr), "%Y-%m-%d T:%H-%M", time_info);
+
     /*
     * Prepara archivos para guardar los datos
     */
-    string prefijo_save = string(timestr);
+    
     ofstream info;
-    string infotxt = "./save/" + string(timestr) +"-info.txt"; 
+    string infotxt = ruta_save + prefijo_save +"-info.txt"; 
     info.open(infotxt);
     /*
     * 
     */
     ofstream info_test;
-    string nameinfo_test = ruta_save + prefijo_save+"-info_test.txt"; 
+    string nameinfo_test = ruta_save + prefijo_save+"-info-test.txt"; 
     info_test.open(nameinfo_test);
     /*
     * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
@@ -83,17 +41,6 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     ofstream info_graficos;
     string name_info_graficos = ruta_save + prefijo_save +"-info-graficos.txt";
     info_graficos.open(name_info_graficos);
-    /*
-    * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
-    * la ejecución del algoritmo
-    */
-    ofstream studentscsv,schoolcsv;
-    string nameCsvStudent = "./save/" + string(timestr) +"-students.csv"; // concatenar
-    studentscsv.open(nameCsvStudent);
-    studentscsv << "school,sep,latitude,longitude,count\n";
-    string nameCsvSchool = "./save/" + string(timestr) +"-school.csv"; // concatenar
-    schoolcsv.open(nameCsvSchool);
-    schoolcsv << "id,latitude,longitude,rbd\n";
 
     ///////////////////////////////////////////////////
     /// Datos colegios
@@ -132,6 +79,7 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     int *cupoArray=nullptr;
     int *alumnosSep=nullptr;
 
+    
     double  costBestSolution,
         costPreviousSolution,
         costCurrentSolution,
@@ -194,7 +142,13 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     ///////////////////////////////////////////////////
 
     
-    info_graficos << count << "," << meanDist(currentSolution,distMat) << "," << S(currentSolution, alumnosSep, totalVuln) << "," << costCupo(currentSolution,cupoArray) << "," << costCurrentSolution << "," << temp << "\n";
+    info_graficos << count << "," 
+                << meanDist(currentSolution,distMat)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
+                << meanDist(currentSolution,distMat) << "," // Distancia promedio recorrida por los estudiantes
+                << S(currentSolution, alumnosSep, totalVuln) << "," // Indice de duncan
+                << costCupo(currentSolution,cupoArray) << "," // Costo cupo de las escuelas
+                << costCurrentSolution << "," // Solución actual
+                << temp << setprecision(13) << "\n"; // Temperatura actual
 
     ///////////////////////////////////////////////////
     /// Genera arreglos que contendran valores del 0 hasta n_students y n_colegios
@@ -290,7 +244,9 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
             }
             for(x = 0; x < n_colegios; x++){
                 previousAluxCol[x] = aluxcol[x];
+                bestAluxCol[x] = aluxcol[x];
                 previousAluVulxCol[x] = aluVulxCol[x];
+                bestAluVulxCol[x] = aluVulxCol[x];
             }
             costBestSolution=costCurrentSolution;
             costPreviousSolution=costCurrentSolution;
@@ -355,7 +311,13 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     
 
     for(x=0; x<vector_count.size(); x++){
-        info_graficos << vector_count.at(x) << "," << vector_meanDist.at(x) << "," << vector_segregation.at(x) << "," << vector_costoCupo.at(x) << "," << vector_costCurrentSolution.at(x) << "," << fixed << vector_temp.at(x) << setprecision(13) << "\n";
+        info_graficos << vector_count.at(x) << "," 
+                    << vector_meanDist.at(x)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
+                    << vector_meanDist.at(x) << "," 
+                    << vector_segregation.at(x) << "," 
+                    << vector_costoCupo.at(x) << "," 
+                    << vector_costCurrentSolution.at(x) << "," 
+                    << fixed << vector_temp.at(x) << setprecision(13) << "\n";
     }
 
 
@@ -389,7 +351,7 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     info << "--------------- Finalizo con exito ----------------" << "\n";
 
 
-    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
+    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat)/max_dist << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
 
     info_graficos_bestSolution.close();
     cout << ".";
@@ -397,10 +359,7 @@ double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom) {
     cout << ".";
     info_test.close();
     info.close();
-    cout << ".";
-    studentscsv.close();
     cout << ".\n";
-    schoolcsv.close();
     cout << " Archivos Guardado" << "\n";
 
 

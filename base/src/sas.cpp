@@ -26,13 +26,13 @@ double sasFunc() {
     */
     
     ofstream info;
-    string infotxt = "./save/" + string(timestr) +"-info.txt"; 
+    string infotxt = ruta_save + prefijo_save +"-info.txt"; 
     info.open(infotxt);
     /*
     * 
     */
     ofstream info_test;
-    string nameinfo_test = ruta_save + prefijo_save+"-info_test.txt"; 
+    string nameinfo_test = ruta_save + prefijo_save+"-info-test.txt"; 
     info_test.open(nameinfo_test);
     /*
     * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
@@ -41,17 +41,6 @@ double sasFunc() {
     ofstream info_graficos;
     string name_info_graficos = ruta_save + prefijo_save +"-info-graficos.txt";
     info_graficos.open(name_info_graficos);
-    /*
-    * Genera los archivos que contienen información de los estados de estudiantes y escuelas durante
-    * la ejecución del algoritmo
-    */
-    ofstream studentscsv,schoolcsv;
-    string nameCsvStudent = "./save/" + string(timestr) +"-students.csv"; // concatenar
-    studentscsv.open(nameCsvStudent);
-    studentscsv << "school,sep,latitude,longitude,count\n";
-    string nameCsvSchool = "./save/" + string(timestr) +"-school.csv"; // concatenar
-    schoolcsv.open(nameCsvSchool);
-    schoolcsv << "id,latitude,longitude,rbd\n";
 
     ///////////////////////////////////////////////////
     /// Datos colegios
@@ -153,7 +142,13 @@ double sasFunc() {
     ///////////////////////////////////////////////////
 
     
-    info_graficos << count << "," << meanDist(currentSolution,distMat) << "," << S(currentSolution, alumnosSep, totalVuln) << "," << costCupo(currentSolution,cupoArray) << "," << costCurrentSolution << "," << temp << "\n";
+    info_graficos << count << "," 
+                << meanDist(currentSolution,distMat)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
+                << meanDist(currentSolution,distMat) << "," // Distancia promedio recorrida por los estudiantes
+                << S(currentSolution, alumnosSep, totalVuln) << "," // Indice de duncan
+                << costCupo(currentSolution,cupoArray) << "," // Costo cupo de las escuelas
+                << costCurrentSolution << "," // Solución actual
+                << temp << setprecision(13) << "\n"; // Temperatura actual
 
     ///////////////////////////////////////////////////
     /// Genera arreglos que contendran valores del 0 hasta n_students y n_colegios
@@ -314,7 +309,13 @@ double sasFunc() {
     
 
     for(x=0; x<vector_count.size(); x++){
-        info_graficos << vector_count.at(x) << "," << vector_meanDist.at(x) << "," << vector_segregation.at(x) << "," << vector_costoCupo.at(x) << "," << vector_costCurrentSolution.at(x) << "," << fixed << vector_temp.at(x) << setprecision(13) << "\n";
+        info_graficos << vector_count.at(x) << "," 
+                    << vector_meanDist.at(x)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
+                    << vector_meanDist.at(x) << "," 
+                    << vector_segregation.at(x) << "," 
+                    << vector_costoCupo.at(x) << "," 
+                    << vector_costCurrentSolution.at(x) << "," 
+                    << fixed << vector_temp.at(x) << setprecision(13) << "\n";
     }
 
 
@@ -348,7 +349,7 @@ double sasFunc() {
     info << "--------------- Finalizo con exito ----------------" << "\n";
 
 
-    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
+    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat)/max_dist << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
 
     info_graficos_bestSolution.close();
     cout << ".";
@@ -356,10 +357,7 @@ double sasFunc() {
     cout << ".";
     info_test.close();
     info.close();
-    cout << ".";
-    studentscsv.close();
     cout << ".\n";
-    schoolcsv.close();
     cout << " Archivos Guardado" << "\n";
 
 

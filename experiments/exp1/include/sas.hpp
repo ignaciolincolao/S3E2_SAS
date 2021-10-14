@@ -42,14 +42,36 @@ struct Info_alu{
     double longitude = 0.0;
 };
 
+extern int n_students, n_colegios, len1, len2;
+extern double coolingRate; // Tasa de enfriamiento
+extern double temp; // Temperatura Inicial
+extern double min_temp;// 0.00000009; // Minima temperatura que puede llegar
+extern double alpha1; // Alpha de distancia
+extern double alpha2; // Alpha de segregación
+extern double alpha3; // Alpha de costocupo
+extern double max_temp;
+extern double k_recalentamiento;
+extern int seed;
 
 
+extern string ruta_save; // Ruta para guardar los archivos
+extern double alpha[3]; // Valores del alpha con orden Distancia, Segregación, Costo Cupo
+extern std::mt19937 mt;
+extern std::uniform_int_distribution<int> dist;
+extern std::uniform_int_distribution<int> dist2;
+extern double max_dist;
+extern double min_dist;
+extern double init_dist;
 
+extern char timestr[20];
+extern int n_block;
+extern int n_thread;
+extern string prefijo_save;
 
 ///////////////////////////////////////////////////
 /// Funciones generales
 ///////////////////////////////////////////////////
-double sasFunc(double t,double cRate, int len1, int len2, bool seedRandom);
+double sasFunc();
 double calCosto(int currentSolution[], double **distMat, const double ptr_alpha[], int alumnosSep[], int totalVuln, int cupoArray[]);
 double meanDist(const int currentSolution[], double  **distMat);
 double S(const int currentSolution[],const int alumnosSep[], int totalVuln);

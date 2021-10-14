@@ -36,7 +36,7 @@ int len1 =1;// 0.00000009; // Minima temperatura que puede llegar
 int len2 = 2;
 
 
-string ruta_save = "./save/"; // Ruta para guardar los archivos
+string ruta_save = "../save/"; // Ruta para guardar los archivos
 double alpha[3]={alpha1,alpha2,alpha3}; // Valores del alpha con orden Distancia, Segregación, Costo Cupo
 random_device rd;
 mt19937 mt(rd());
