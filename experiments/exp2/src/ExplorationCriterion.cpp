@@ -47,53 +47,66 @@ double solutionNE3(int n_students,
         int *alumnosSep)
     {
     int aluchange,colchange;
-    int nb = 1;
-    int nt = 1;
-    double *mSolution[nb];
-    for (int x=0; x<nb; x++)
-        mSolution[x] = (double*)malloc(nt * sizeof(double));
+    double *mSolution[n_block];
+    for (int x=0; x<n_block; x++){
+        mSolution[x] = (double*)malloc(n_thread * sizeof(double));
+    }
 
-
-    shuffle(shuffle_student,nb,dist);
-    shuffle(shuffle_colegios,nt,dist2);
+    shuffle(shuffle_student,n_block,dist);
+    shuffle(shuffle_colegios,n_thread,dist2);
 
     int *c_aluxcol=(int *)malloc(sizeof(int)*n_colegios);
     int *c_aluVulxCol=(int *)malloc(sizeof(int)*n_colegios);
     int *c_currentSolution =(int *)malloc(sizeof(int)*n_students);
-    int *c_alumnosSep= (int *)malloc( sizeof(int)*n_students);
 
     double minSolution = 0;
 
 
-    for(int i =0; i < nb; i++)
+    for(int i =0; i < n_block; i++)
     {
-        for(int j=0; j < nt; j++)
+        for(int j=0; j < n_thread; j++)
         {
+            aluchange = shuffle_student[i];
+            colchange = shuffle_colegios[j];
+
+
+            
             memcpy(c_aluxcol,aluxcol,sizeof(int)*n_colegios);
             memcpy(c_aluVulxCol,aluVulxCol,sizeof(int)*n_colegios);
             memcpy(c_currentSolution,currentSolution,sizeof(int)*n_students);
-            memcpy(c_alumnosSep,alumnosSep,sizeof(int)*n_students);
-
-            aluchange=shuffle_student[i];
-            colchange = shuffle_colegios[j];
+        
             //ELimina el estudiante de la escuela actual
-            c_aluxcol[c_currentSolution[aluchange]]-=1;
-            c_aluVulxCol[c_currentSolution[aluchange]]-=c_alumnosSep[aluchange];
-            //Asigna al estudiante a la nueva escuela
-            c_currentSolution[aluchange] = colchange;
-            c_aluxcol[colchange]+=1;
-            c_aluVulxCol[colchange]+=c_alumnosSep[aluchange];
-            mSolution[i][j] = newSolution_v2(n_students,n_colegios,totalVuln,c_aluxcol,c_aluVulxCol,cupoArray,distMat,c_currentSolution,ptr_alpha);
+            c_aluxcol[c_currentSolution[aluchange]]-=1; ///
+            c_aluVulxCol[c_currentSolution[aluchange]]-=alumnosSep[aluchange]; ///
+            c_aluxcol[colchange]+=1; ///
+            c_aluVulxCol[colchange]+=alumnosSep[aluchange]; ///
+            c_currentSolution[aluchange] = colchange; ///
+
+            if(c_currentSolution[aluchange] != currentSolution[aluchange]){ 
+                mSolution[i][j] = newSolution_v2(n_students,n_colegios,totalVuln,c_aluxcol,c_aluVulxCol,cupoArray,distMat,c_currentSolution,ptr_alpha);
+            }
+            else{
+                /*
+                Cuando aleatoriamente el estudiante seleccionado se trata de mover a la misma escuela que ya pertenece
+                se deja que el valor es 1 para que no se considere como el minimo entre los posibles movimientos
+                */
+                mSolution[i][j] = 1;
+            }
+            
         }
+        
         
     }
     minSolution= mSolution[0][0];
-    for(int i =0; i < nb; i++)
+    aluchange=shuffle_student[0];
+    colchange = shuffle_colegios[0];
+
+    for(int i =0; i < n_block; i++)
     {
-        for(int j=0; j < nt; j++)
+        for(int j=0; j < n_thread; j++)
         {
         
-            if(mSolution[i][j] < minSolution){
+            if(mSolution[i][j] <= minSolution && i != 0 && j !=0 ){
                 minSolution = mSolution[i][j];
                 aluchange=shuffle_student[i];
                 colchange = shuffle_colegios[j];
@@ -103,23 +116,22 @@ double solutionNE3(int n_students,
 
 
     //ELimina el estudiante de la escuela actual
-    aluxcol[currentSolution[aluchange]]-=1;
-    aluVulxCol[currentSolution[aluchange]]-=alumnosSep[aluchange];
-    //Asigna al estudiante a la nueva escuela
-    currentSolution[aluchange] = colchange;
-    aluxcol[colchange]+=1;
-    aluVulxCol[colchange]+=alumnosSep[aluchange];
+
+    aluxcol[currentSolution[aluchange]]-=1; ///
+    aluVulxCol[currentSolution[aluchange]]-=alumnosSep[aluchange]; ///
+    aluxcol[colchange]+=1; ///
+    aluVulxCol[colchange]+=alumnosSep[aluchange]; ///
+    currentSolution[aluchange] = colchange; ///
 
 
     // For que busca al menor
-    for(int i =0; i < nb; i++)
+    for(int i =0; i < n_block; i++)
     {
         free(mSolution[i]);
     }
     free(c_aluxcol);
     free(c_aluVulxCol);
     free(c_currentSolution);
-    free(c_alumnosSep);
 
     
     return minSolution;
