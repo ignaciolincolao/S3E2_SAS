@@ -5,11 +5,11 @@ Primer Segregación: 0.555358
 Primer CostoCupo: 0.320124
 --------------- Resultado Final ----------------
 Numero de Ciclos 1123871
-Costo de la solución previa: 0.0688188
-Costo de la mejor solución: 0.0688188
-Costo de la solución actual: 0.0689257
-Tiempo de ejecución de SA: 56.492740
-distancia: 3.863530983
-Segregación: 0.003241370
-CostoCupo: 0.035730680
+Costo de la solución previa: 0.0702852
+Costo de la mejor solución: 0.0702829
+Costo de la solución actual: 0.070378
+Tiempo de ejecución de SA: 1340.628341
+distancia: 3.863123288
+Segregación: 0.003668000
+CostoCupo: 0.039334248
 --------------- Finalizo con exito ----------------

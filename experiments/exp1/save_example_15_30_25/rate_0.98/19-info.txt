@@ -8,7 +8,7 @@ Numero de Ciclos 92991
 Costo de la solución previa: 0.991553
 Costo de la mejor solución: 0.393842
 Costo de la solución actual: 0.991591
-Tiempo de ejecución de SA: 3.182049
+Tiempo de ejecución de SA: 148.379450
 distancia: 3.126995781
 Segregación: 0.553807419
 CostoCupo: 0.314298580
