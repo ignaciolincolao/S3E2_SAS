@@ -204,6 +204,14 @@ double sasFunc() {
     int count_reheating = 0;
     double bestTemp = 0;
 
+    int count_use_student[n_students];
+    for(int mm=0; mm < n_students; mm++){
+        count_use_student[mm] = 0;
+    }
+    ofstream info_graficos_use_student;
+    string name_info_graficos_student = ruta_save + prefijo_save +"-info-graficos-student.txt";
+    info_graficos_use_student.open(name_info_graficos_student);
+
 
 
 
@@ -221,7 +229,7 @@ double sasFunc() {
         ///  Selecciona aleatoria mente a los alumnos
         ///////////////////////////////////////////////////
         costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
-        
+        count_use_student[shuffle_student[0]]+=1;
         
         if(costCurrentSolution<0.00){
 
@@ -324,6 +332,24 @@ double sasFunc() {
 
 
 
+    int totstudent = 0;
+    int totstudent0 = 0;
+    for(int mm = 0; mm < n_students; mm++){
+        if(count_use_student[mm] == 0){
+            totstudent0+=1;
+        }
+        else{
+            totstudent+=1;
+        }
+        
+    }
+    for(int mm = 0; mm < n_students; mm++){
+        info_graficos_use_student << count_use_student[mm] << endl;
+    }
+    info_graficos_use_student.close();
+    cout << "total de estudiantes almenos una vez utilizado = " << totstudent << " | total de estudiantes nunca usado = " << totstudent0 << endl;
+    cout << "numero de estudiantes totales = " << n_students << endl;
+    
 
     ///////////////////////////////////////////////////
     /// Almacenamiento de datos

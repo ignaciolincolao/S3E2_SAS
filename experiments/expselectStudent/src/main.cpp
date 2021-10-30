@@ -27,7 +27,7 @@ int n_students, n_colegios;
 double alpha1 = 15; // Alpha de distancia
 double alpha2 = 30; // Alpha de segregación
 double alpha3 = 25; // Alpha de costocupo
-double coolingRate = 0.98; // Tasa de enfriamiento
+double coolingRate = 0.991; // Tasa de enfriamiento
 double temp = 100000; // Temperatura inicial
 double min_temp = 0.00000009; // Minima temperatura que puede llegar
 int n_block = 32;
