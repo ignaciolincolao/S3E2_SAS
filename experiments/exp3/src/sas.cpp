@@ -221,7 +221,7 @@ double sasFunc() {
         ///////////////////////////////////////////////////
         ///  Selecciona aleatoria mente a los alumnos
         ///////////////////////////////////////////////////
-        costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,costCurrentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
+        costCurrentSolution = solutionNE4(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,costCurrentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
         
         
         if(costCurrentSolution<0.00){

@@ -15,7 +15,7 @@ exp1:
 	T_{m} = 0,00000009
 	l_{1} = m
 	l_{2} = m*2
-	alpha [0.98,0.998,0.9998]
+	alpha [0.98 0.99 0.992 0.998 0.9998]
 	
 exp2: 
 	-Temperatura Inicial = IT1
@@ -36,3 +36,22 @@ exp2:
 	b = [32,64,128,256]
 	h = [1,32,64,85]
 	
+	
+exp3: 
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL7
+	-Criterio de exploración = NE4
+	-Criterio de aceptación = AC1
+	-Criterio de parada = SC3
+		
+	n = numero de estudiantes 
+	m = numero de colegios
+	Variaciones: 
+	T_{0} = 100000
+	T_{m} = 0,00000009
+	l_{1} = m
+	l_{2} = m*2
+	alpha = [0.98 0.99 0.992]
+	b = [32,64,128,256]
+	h = [1,32,64,84]

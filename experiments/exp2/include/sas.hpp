@@ -56,10 +56,9 @@ extern int seed;
 
 extern string ruta_save; // Ruta para guardar los archivos
 extern double alpha[3]; // Valores del alpha con orden Distancia, Segregación, Costo Cupo
-extern mt19937 mt;
-extern uniform_int_distribution<int> dist;
-extern uniform_int_distribution<int> dist2;
-extern uniform_real_distribution<double> dist_accepta;
+extern std::mt19937 mt;
+extern std::uniform_int_distribution<int> dist;
+extern std::uniform_int_distribution<int> dist2;
 extern double max_dist;
 extern double min_dist;
 extern double init_dist;
@@ -68,6 +67,7 @@ extern char timestr[20];
 extern int n_block;
 extern int n_thread;
 extern string prefijo_save;
+extern string name_exp;
 
 ///////////////////////////////////////////////////
 /// Funciones generales

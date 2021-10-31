@@ -8,14 +8,14 @@
 /// en caso de menor temperatura menor probabibilidad que acepte una solución peor.
 ///////////////////////////////////////////////////
 
-int metropolisAC1(double costPrevious, double costCurrent, uniform_real_distribution<double> dist_accepta){
+int metropolisAC1(double costPrevious, double costCurrent){
+    uniform_real_distribution<double> dist_accepta(0.0, 1.0);
     if(costCurrent < costPrevious){
         return 1;
     }
     else{
         double valor=p(costPrevious,costCurrent);
         double nrandom=dist_accepta(mt);
-        
         if(nrandom<valor){
             return 1;
         }
@@ -26,7 +26,6 @@ int metropolisAC1(double costPrevious, double costCurrent, uniform_real_distribu
 }
 double p(double costPrevious,double costCurrent){
     double po;
-    //cout << temp << " temperatura dentro de funcion" << endl;
     po = exp(-(costCurrent-costPrevious)/((double)temp));
     return po;
 }

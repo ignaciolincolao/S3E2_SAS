@@ -15,7 +15,7 @@
 double sasFunc() {
     int x=0,z=0;
     int totalVuln=0;
-    mt.seed(seed);
+
     //srand(time(NULL));
     ///////////////////////////////////////////////////
     /// Genera archivo de almacenamiento de datos
@@ -114,7 +114,6 @@ double sasFunc() {
     assignSchoolToArray(previousSolution, bestSolution, currentSolution, ptr_colegios, ptr_students, cupoArray);
     calcDist(ptr_colegios, ptr_students, distMat);
     max_dist = getMaxDistance(distMat);
-    //cout << setprecision(100)<< max_dist << endl;
     normalizedAlpha(alpha);
 
     ///////////////////////////////////////////////////
@@ -123,6 +122,7 @@ double sasFunc() {
     costBestSolution=calCosto(currentSolution,distMat,ptr_alpha, alumnosSep, totalVuln, cupoArray);
     costPreviousSolution=costBestSolution;
     costCurrentSolution=costBestSolution;
+    
     
     cout << "--------------- Primeros datos -------------" << "\n";
     cout << "Primer costo de solución: " << costBestSolution << "\n";
@@ -141,8 +141,8 @@ double sasFunc() {
     /// Generación de archivos que almacenan información de los graficos
     ///////////////////////////////////////////////////
 
-    
-    info_graficos << 0 << "," 
+    info_graficos << setprecision(13);
+    info_graficos << count << "," 
                 << meanDist(currentSolution,distMat)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
                 << meanDist(currentSolution,distMat) << "," // Distancia promedio recorrida por los estudiantes
                 << S(currentSolution, alumnosSep, totalVuln) << "," // Indice de duncan
@@ -150,10 +150,10 @@ double sasFunc() {
                 << costCurrentSolution << "," // Solución actual
                 << temp << setprecision(13) << "\n"; // Temperatura actual
 
+    count++;
     ///////////////////////////////////////////////////
     /// Genera arreglos que contendran valores del 0 hasta n_students y n_colegios
     ///////////////////////////////////////////////////
-    
     int *shuffle_student = (int *)malloc(sizeof(int)*n_students);
     int *shuffle_colegios = (int *)malloc(sizeof(int)*n_colegios);
     for (int i = 0; i < n_students; i++) {
@@ -204,15 +204,16 @@ double sasFunc() {
     int valmaxheating=n_colegios;
     int count_reheating = 0;
     double bestTemp = 0;
-    count++;
+
+
 
 
     while(temp > min_temp){
 
-        for(x=0;x<n_students;x++){
-            currentSolution[x]=previousSolution[x];
+        for(x=0;x< n_students; x++){
+            currentSolution[x] = previousSolution[x];
         }
-        for(x = 0; x < n_colegios; x++){
+        for(x=0; x < n_colegios; x++){
             aluxcol[x]=previousAluxCol[x];
             aluVulxCol[x]=previousAluVulxCol[x];
         }
@@ -220,7 +221,9 @@ double sasFunc() {
         ///////////////////////////////////////////////////
         ///  Selecciona aleatoria mente a los alumnos
         ///////////////////////////////////////////////////
-        costCurrentSolution = solutionNE3(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
+        costCurrentSolution = solutionNE3(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,costCurrentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
+        
+        
         if(costCurrentSolution<0.00){
 
             cout << "distancia: " << meanDist(currentSolution,distMat) << "\n";
@@ -246,10 +249,7 @@ double sasFunc() {
             }
             for(x = 0; x < n_colegios; x++){
                 previousAluxCol[x] = aluxcol[x];
-                bestAluxCol[x] = aluxcol[x];
                 previousAluVulxCol[x] = aluVulxCol[x];
-                bestAluVulxCol[x] = aluVulxCol[x];
-
             }
             costBestSolution=costCurrentSolution;
             costPreviousSolution=costCurrentSolution;
@@ -267,8 +267,7 @@ double sasFunc() {
         // En el caso que el la solución actual sea mas alta intenta aceptar una peor solución en base
         // a la función acepta
         else{
-            //cout << temp << " temperatura antes de funcion" << endl;
-            if(metropolisAC1(costPreviousSolution,costCurrentSolution,dist_accepta)==1){
+            if(metropolisAC1(costPreviousSolution,costCurrentSolution)==1){
                 for(x=0;x<n_students;x++){
                     previousSolution[x]=currentSolution[x];
                 }
@@ -289,14 +288,12 @@ double sasFunc() {
         ///////////////////////////////////////////////////
         /// Largo de temperatura
         ///////////////////////////////////////////////////
-        if(c_accepta>=n_colegios){
+        if(c_accepta>=n_colegios*len1){
             temp=temp*(coolingRate);
-            //cout << totalVuln << " | " << temp << "| costBestSolution: " << costBestSolution << "| costCurrent: " << costCurrentSolution <<endl;
             c_accepta=0;
         }
-        if(count%((n_colegios*2))==0){
+        if(count%((n_colegios*len2))==0){
             temp=temp*(coolingRate);
-            //cout << totalVuln << " | " << temp << "| costBestSolution: " << costBestSolution << "| costCurrent: " << costCurrentSolution <<endl;
         }
 
 
@@ -357,7 +354,28 @@ double sasFunc() {
     info << "--------------- Finalizo con exito ----------------" << "\n";
 
 
-    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat)/max_dist << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << n_block << "," << n_thread << ","<< seed << "\n";
+    info_test << fixed << time_taken << setprecision(9) << "," 
+            << costBestSolution << "," 
+            << meanDist(bestSolution,distMat)/max_dist 
+            << "," << meanDist(bestSolution,distMat) 
+            << "," << S(bestSolution, alumnosSep, totalVuln) 
+            << "," << costCupo(bestSolution,cupoArray) 
+            << "," << count 
+            << "," << fixed << temp << setprecision(13) 
+            << "," << min_temp 
+            << "," << coolingRate 
+            << "," << max_temp 
+            << "," << k_recalentamiento 
+            << "," << alpha1 
+            << "," << alpha2 
+            << "," << alpha3 
+            << "," << alpha[0]
+            << "," << alpha[1]
+            << "," << alpha[2]
+            << "," << n_block 
+            << "," << n_thread 
+            << "," << seed 
+            << ","<< name_exp << "\n";
 
     info_graficos_bestSolution.close();
     cout << ".";
@@ -411,11 +429,11 @@ double S(const int currentSolution[],const int alumnosSep[], int totalVuln){
     double totalSesc = 0.0;
     int aluVulCol =0;
     int aluNoVulCol = 0;
-    for(int n=0; n<n_colegios;n++) {
+    for(int n=0; n<n_colegios;n++){
         aluVulCol = 0;
         aluNoVulCol = 0;
-        for (int a = 0; a < n_students; a++) {
-            if (currentSolution[a] == n) {
+        for (int a = 0; a < n_students; a++){
+            if(currentSolution[a] == n){
                 aluNoVulCol++;
                 aluVulCol+=alumnosSep[a];
             }
@@ -510,6 +528,7 @@ void calcDist(Info_colegio *ptr_colegios, Info_alu *ptr_students, double **distM
         for(int y=0; y < n_colegios; y++){
             distMat[x][y] = sqrt( pow((ptr_students->latitude - ptr_colegios->latitude),2)+pow((ptr_students->longitude - ptr_colegios->longitude),2))/1000;
             ptr_colegios++;
+
         }
         ptr_colegios = ptr_aux;
         ptr_students++;
@@ -650,6 +669,7 @@ void initializeArray(int *aluxcol, int *previousAluxCol, int *bestAluxCol, int *
         aluVulxCol[x] = colegios[x].prioritario;
         previousAluVulxCol[x] = colegios[x].prioritario;
         bestAluVulxCol[x] = colegios[x].prioritario;
+
     }
     ///////////////////////////////////////////////////
     /// Se crear un arreglo donde el el valor es la posición del estudiante sep

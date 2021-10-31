@@ -22,19 +22,22 @@ int n_students, n_colegios;
 /// Parametros de configuración Default
 ///////////////////////////////////////////////////
 
+
+
 double alpha1 = 15; // Alpha de distancia
 double alpha2 = 30; // Alpha de segregación
 double alpha3 = 25; // Alpha de costocupo
 double coolingRate = 0.98; // Tasa de enfriamiento
-double temp = 100000; // Temperatura inicial
+double temp = 100000.0; // Temperatura inicial
 double min_temp = 0.00000009; // Minima temperatura que puede llegar
 int n_block = 32;
 int n_thread = 32;
 double max_temp = 0;
-double k_recalentamiento = 0.90;
+double k_recalentamiento = 0.98;
 int seed = 12315;
 int len1 =1;// 0.00000009; // Minima temperatura que puede llegar
 int len2 = 2;
+string name_exp= "base";
 
 
 string ruta_save = "../save/"; // Ruta para guardar los archivos
@@ -76,7 +79,9 @@ int main(int argc, char *argv[]) {
         prefijo_save = argv[11];
         max_temp= pow(10,300);
         seed= std::stoi(argv[12]);
+        name_exp = argv[13];
     }
+    mt.seed(seed);
     
     double a = sasFunc();
     return (EXIT_SUCCESS);

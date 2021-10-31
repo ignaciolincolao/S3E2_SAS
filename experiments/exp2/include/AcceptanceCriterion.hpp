@@ -8,10 +8,9 @@
 
 using namespace std;
 
-extern mt19937 mt;
-extern int seed;
+extern std::mt19937 mt;
 extern double temp;
-int metropolisAC1(double costPrevious, double costCurrent,uniform_real_distribution<double> dist);
+int metropolisAC1(double costPrevious, double costCurrent);
 int metropolisAC3(double costPrevious, double costCurrent);
 int dCriteriaAC6(double costPrevious, double costCurrent);
 double p(double costPrevious,double costCurrent);
