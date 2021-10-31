@@ -122,7 +122,7 @@ double sasFunc() {
     costBestSolution=calCosto(currentSolution,distMat,ptr_alpha, alumnosSep, totalVuln, cupoArray);
     costPreviousSolution=costBestSolution;
     costCurrentSolution=costBestSolution;
-    count++;
+    
     
     cout << "--------------- Primeros datos -------------" << "\n";
     cout << "Primer costo de solución: " << costBestSolution << "\n";
@@ -141,7 +141,7 @@ double sasFunc() {
     /// Generación de archivos que almacenan información de los graficos
     ///////////////////////////////////////////////////
 
-    
+    info_graficos << setprecision(13);
     info_graficos << count << "," 
                 << meanDist(currentSolution,distMat)/max_dist << "," // Distancia promedio recorrida por los estudiantes normalizada
                 << meanDist(currentSolution,distMat) << "," // Distancia promedio recorrida por los estudiantes
@@ -150,6 +150,7 @@ double sasFunc() {
                 << costCurrentSolution << "," // Solución actual
                 << temp << setprecision(13) << "\n"; // Temperatura actual
 
+    count++;
     ///////////////////////////////////////////////////
     /// Genera arreglos que contendran valores del 0 hasta n_students y n_colegios
     ///////////////////////////////////////////////////
@@ -220,7 +221,7 @@ double sasFunc() {
         ///////////////////////////////////////////////////
         ///  Selecciona aleatoria mente a los alumnos
         ///////////////////////////////////////////////////
-        costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
+        costCurrentSolution = solutionNE1(n_students,n_colegios,totalVuln,aluxcol,aluVulxCol,cupoArray,distMat,currentSolution,costCurrentSolution,ptr_alpha,shuffle_student,shuffle_colegios,alumnosSep);
         
         
         if(costCurrentSolution<0.00){
@@ -353,7 +354,28 @@ double sasFunc() {
     info << "--------------- Finalizo con exito ----------------" << "\n";
 
 
-    info_test << fixed << time_taken << setprecision(9) << "," << costBestSolution << "," << meanDist(bestSolution,distMat)/max_dist << "," << meanDist(bestSolution,distMat) << "," << S(bestSolution, alumnosSep, totalVuln) << "," << costCupo(bestSolution,cupoArray) << "," << count << "," << fixed << temp << setprecision(13) << "," << min_temp << "," << coolingRate << "," << alpha1 << "," << alpha2 << "," << alpha3 << "," << seed << "\n";
+    info_test << fixed << time_taken << setprecision(9) << "," 
+            << costBestSolution << "," 
+            << meanDist(bestSolution,distMat)/max_dist 
+            << "," << meanDist(bestSolution,distMat) 
+            << "," << S(bestSolution, alumnosSep, totalVuln) 
+            << "," << costCupo(bestSolution,cupoArray) 
+            << "," << count 
+            << "," << fixed << temp << setprecision(13) 
+            << "," << min_temp 
+            << "," << coolingRate 
+            << "," << max_temp 
+            << "," << k_recalentamiento 
+            << "," << alpha1 
+            << "," << alpha2 
+            << "," << alpha3 
+            << "," << alpha[0]
+            << "," << alpha[1]
+            << "," << alpha[2]
+            << "," << n_block 
+            << "," << n_thread 
+            << "," << seed 
+            << ","<< name_exp << "\n";
 
     info_graficos_bestSolution.close();
     cout << ".";

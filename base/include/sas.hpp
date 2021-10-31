@@ -67,6 +67,7 @@ extern char timestr[20];
 extern int n_block;
 extern int n_thread;
 extern string prefijo_save;
+extern string name_exp;
 
 ///////////////////////////////////////////////////
 /// Funciones generales

@@ -27,6 +27,7 @@ double solutionNE1(int n_students,
         int *cupoArray,
         double **distMat, 
         int *currentSolution,
+        double costCurrentSolution,
         const double *ptr_alpha,
         int *shuffle_student,
         int *shuffle_colegios,
@@ -40,8 +41,26 @@ double solutionNE3(int n_students,
         int *cupoArray,
         double **distMat, 
         int *currentSolution,
+        double costCurrentSolution,
         const double *ptr_alpha,
         int *shuffle_student,
         int *shuffle_colegios,
         int *alumnosSep);
+
+double solutionNE4(int n_students,
+        int n_colegios,
+        int totalVuln,
+        int *aluxcol,
+        int *aluVulxCol,
+        int *cupoArray,
+        double **distMat, 
+        int *currentSolution,
+        double costCurrentSolution,
+        const double *ptr_alpha,
+        int *shuffle_student,
+        int *shuffle_colegios,
+        int *alumnosSep);
+
+
+
 #endif
