@@ -2,9 +2,9 @@
 #include <sas.hpp>
 #include <ExplorationCriterion.hpp>
 #include <AcceptanceCriterion.hpp>
-
-
-
+#include <TemperatureLength.hpp>
+#include <ReheatingMethods.hpp>
+#include <CoolingScheme.hpp>
 ///////////////////////////////////////////////////
 /// Variables globales.
 ///////////////////////////////////////////////////
@@ -197,13 +197,21 @@ double sasFunc() {
     vector<double> vector_temp;
     vector<int> vector_count;
 
-    double e_const=0.01;
+    
     int count_rechaso=0;
     int reheating = 0;
     int c_accepta = 0;
+    int c_cooling_temperature = 0;
     int valmaxheating=n_colegios;
     int count_reheating = 0;
     double bestTemp = 0;
+    double k_reheating_init = k_reheating;
+    double temp_init = temp;
+    int count_trials = 0;
+    float len1_init = len1;
+    float len2_init = len2;
+    double len3_init = len3;
+    double len4_init = len4;
 
 
 
@@ -284,19 +292,18 @@ double sasFunc() {
             }
         }
 
-
-        ///////////////////////////////////////////////////
-        /// Largo de temperatura
-        ///////////////////////////////////////////////////
-        if(c_accepta>=n_colegios*len1){
-            temp=temp*(coolingRate);
-            c_accepta=0;
-        }
-        if(count%((n_colegios*len2))==0){
-            temp=temp*(coolingRate);
+        //if(temperatureTL7(temp, c_cooling_temperature, c_accepta, len1, len2, n_colegios, coolingRate,count)){
+        //if(temperatureTL8(temp, c_cooling_temperature, count_trials, len1, len2, coolingRate)){
+        if(temperatureTL9(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
+        //if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
+            coolingCS1(temp,coolingRate);
         }
 
-
+        //reheatingTR11(temp, k_reheating, n_reheating, count_rechaso);
+        //reheatingTR12(temp, k_reheating, n_reheating, count);
+        //reheatingTR13(temp, k_reheating, n_reheating, c_cooling_temperature);
+        //reheatingTR14(temp, k_reheating, k_reheating_init, n_reheating, count_rechaso, e_const);
+        count_trials++;
         count++;
 
     }
@@ -361,20 +368,31 @@ double sasFunc() {
             << "," << S(bestSolution, alumnosSep, totalVuln) 
             << "," << costCupo(bestSolution,cupoArray) 
             << "," << count 
+            << "," << fixed << temp_init << setprecision(13) 
             << "," << fixed << temp << setprecision(13) 
             << "," << min_temp 
-            << "," << coolingRate 
-            << "," << max_temp 
-            << "," << k_recalentamiento 
+            << "," << seed
             << "," << alpha1 
             << "," << alpha2 
             << "," << alpha3 
             << "," << alpha[0]
             << "," << alpha[1]
             << "," << alpha[2]
+            << "," << coolingRate 
+            << "," << k_reheating_init 
+            << "," << e_const
+            << "," << n_reheating
+            << "," << len1_init
+            << "," << len2_init
+            << "," << len3_init
+            << "," << len4_init
+            << "," << len1
+            << "," << len2
+            << "," << len3
+            << "," << len4
+            << "," << Th
             << "," << n_block 
             << "," << n_thread 
-            << "," << seed 
             << ","<< name_exp << "\n";
 
     info_graficos_bestSolution.close();

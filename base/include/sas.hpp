@@ -42,7 +42,10 @@ struct Info_alu{
     double longitude = 0.0;
 };
 
-extern int n_students, n_colegios, len1, len2;
+extern int n_students, n_colegios;
+extern float len1, len2;
+extern double len3, len4;
+extern double e_const, Th;
 extern double coolingRate; // Tasa de enfriamiento
 extern double temp; // Temperatura Inicial
 extern double min_temp;// 0.00000009; // Minima temperatura que puede llegar
@@ -50,7 +53,8 @@ extern double alpha1; // Alpha de distancia
 extern double alpha2; // Alpha de segregación
 extern double alpha3; // Alpha de costocupo
 extern double max_temp;
-extern double k_recalentamiento;
+extern double k_reheating;
+extern int n_reheating;
 extern int seed;
 
 

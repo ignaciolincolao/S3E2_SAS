@@ -24,19 +24,24 @@ int n_students, n_colegios;
 
 
 
-double alpha1 = 15; // Alpha de distancia
-double alpha2 = 30; // Alpha de segregación
-double alpha3 = 25; // Alpha de costocupo
-double coolingRate = 0.98; // Tasa de enfriamiento
+double alpha1 = 15; // Alpha de distancia valor 1 < alpha1
+double alpha2 = 30; // Alpha de segregación valor 1 < alpha2
+double alpha3 = 25; // Alpha de costocupo valor 1 < alpha3
+double coolingRate = 0.98; // Tasa de enfriamiento valores entre 0 < coolingRate < 1
 double temp = 100000.0; // Temperatura inicial
 double min_temp = 0.00000009; // Minima temperatura que puede llegar
 int n_block = 256;
 int n_thread = 1;
 double max_temp = 0;
-double k_recalentamiento = 0.98;
+double k_reheating = 0.98;
+int n_reheating = 29853; // Variable ligada a cuanto debe esperar para iniciar recalentamiento
 int seed = 12315;
-int len1 =1;// 0.00000009; // Minima temperatura que puede llegar
-int len2 = 2;
+float len1 =1;// 0.00000009; // Minima temperatura que puede llegar
+float len2 =2;
+double len3 = 1.0;
+double len4 = 0.99;
+double e_const=0.01;
+double Th = 1.1;
 string name_exp= "base";
 
 
@@ -63,24 +68,38 @@ int main(int argc, char *argv[]) {
     strftime(timestr, sizeof(timestr), "%Y-%m-%d T:%H-%M", time_info);
     prefijo_save = string(timestr);
     if (argc>1) {
-        alpha1 = std::stod(argv[1]); // Alpha de distancia
-        alpha2 = std::stod(argv[2]); // Alpha de segregación
-        alpha3 = std::stod(argv[3]); // Alpha de costocupo
-        alpha[0]=alpha1;
-        alpha[1]=alpha2;
-        alpha[2]=alpha3;
-        coolingRate = std::stod(argv[4]); // Tasa de enfriamiento
-        k_recalentamiento = std::stod(argv[5]);
-        temp = std::stod(argv[6]); // Temperatura inicial
-        min_temp = std::stod(argv[7]); // Minima temperatura que puede llegar
-        n_block = std::stoi(argv[8]); // Numero de blockes = numeros de alumnos aleatorios
-        n_thread = std::stoi(argv[9]); // Numero de threads por bloque = numeros de escuelas aleatorios
-        ruta_save = argv[10];
-        prefijo_save = argv[11];
-        max_temp= pow(10,300);
-        seed= std::stoi(argv[12]);
-        name_exp = argv[13];
+        // Config init
+        temp = stod(argv[1]); // Temperatura inicial
+        min_temp = stod(argv[2]); // Minima temperatura que puede llegar
+        seed= stoi(argv[3]); // Semilla inicial
+        alpha1 = stod(argv[4]); //  de distancia
+        alpha2 = stod(argv[5]); // Alpha de segregación
+        alpha3 = stod(argv[6]); // Alpha de costocupo
+        // Cooling
+        coolingRate = stod(argv[7]); // Tasa de enfriamiento
+        // Reheating
+        k_reheating = stod(argv[8]);
+        e_const = stod(argv[9]);
+        n_reheating = stoi(argv[10]);
+        // Temperature Length
+        len1 = stof(argv[11]);
+        len2 = stof(argv[12]);
+        len3 = stod(argv[13]);
+        len4 = stod(argv[14]);
+        // Acceptance Criterion
+        Th = stod(argv[15]);
+        // Exploration criterion
+        n_block = stoi(argv[16]); // Numero de blockes = numeros de alumnos aleatorios
+        n_thread = stoi(argv[17]); // Numero de threads por bloque = numeros de escuelas aleatorios
+        // Ubicacion de archivos
+        ruta_save = argv[18];
+        prefijo_save = argv[19];
+        name_exp = argv[20];
     }
+    max_temp= pow(10,300);
+    alpha[0]=alpha1;
+    alpha[1]=alpha2;
+    alpha[2]=alpha3;
     mt.seed(seed);
     
     double a = sasFunc();
