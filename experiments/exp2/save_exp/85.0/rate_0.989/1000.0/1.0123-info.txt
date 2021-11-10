@@ -1,0 +1,15 @@
+--------------- Primeros datos -------------
+Primer costo de solución: 0.396553
+Primer distancia: 3.12456
+Primer Segregación: 0.555358
+Primer CostoCupo: 0.320124
+--------------- Resultado Final ----------------
+Numero de Ciclos 2962251
+Costo de la solución previa: 0.0629521
+Costo de la mejor solución: 0.0629521
+Costo de la solución actual: 0.0632338
+Tiempo de ejecución de SA: 118.164347
+distancia: 3.850599926
+Segregación: 0.004423047
+CostoCupo: 0.018398118
+--------------- Finalizo con exito ----------------

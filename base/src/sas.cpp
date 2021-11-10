@@ -296,7 +296,7 @@ double sasFunc() {
         //if(temperatureTL8(temp, c_cooling_temperature, count_trials, len1, len2, coolingRate)){
         if(temperatureTL9(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
         //if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
-            coolingCS1(temp,coolingRate);
+            coolingCS2(temp,coolingRate);
         }
 
         //reheatingTR11(temp, k_reheating, n_reheating, count_rechaso);

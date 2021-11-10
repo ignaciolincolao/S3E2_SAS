@@ -8,12 +8,308 @@ exp1:
 	-Criterio de aceptación = AC1
 	-Criterio de parada = SC3
 		
-	n = numero de estudiantes 
-	m = numero de colegios
-	Variaciones: 
-	T_{0} = 100000
-	T_{m} = 0,00000009
-	l_{1} = m
-	l_{2} = m*2
-	alpha [0.98 0.99 0.992 0.998 0.9998]
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
 	
+exp2: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL7
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC3
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = [1.1 1.01 1.001]
+	n_block = -1
+	n_thread = -1
+	
+exp3: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL7
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC6
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp4: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL8
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC1
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [0.1 0.5 1]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp5: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL8
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC3
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [0.1 0.5 1]
+	len3 = -1
+	len4 = -1
+	Th = Th = [1.1 1.01 1.001]
+	n_block = -1
+	n_thread = -1
+	
+exp6: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL8
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC6
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp7: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL9
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC1
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp8: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL9
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC3
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp9: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL9
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC6
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp10: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL11
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC1
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp11: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL11
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC3
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+exp12: 
+
+	-Temperatura Inicial = IT1
+	-Esquema de enfriamiento = CS2
+	-Longitud de temperatura = TL11
+	-Criterio de exploración = NE1
+	-Criterio de aceptación = AC6
+	-Criterio de parada = SC3
+		
+	Temp inicial = [100000 1000 10]
+	min Temp = 0.00000009
+	alpha1 = 15
+	alpha2 = 30
+	alpha3 = 25
+	coolingRate = [0.98 0.989 0.998]
+	k_reheating = -1
+	e_const = -1
+	n_reheating = -1
+	len1 = 1
+	len2 = [2 85 280]
+	len3 = -1
+	len4 = -1
+	Th = -1
+	n_block = -1
+	n_thread = -1
+	
+	
+INcluir rehetat con SC9
