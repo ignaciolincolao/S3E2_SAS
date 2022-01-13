@@ -1,4 +1,4 @@
-coolingrates=(0.98 0.989 0.998)
+coolingrates=(0.98 0.998)
 temp_inital=(100000.0 1000.0 10.0)
 len2array=(0.1 0.5 1)
 

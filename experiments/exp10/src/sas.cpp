@@ -292,10 +292,10 @@ double sasFunc() {
             }
         }
 
-        if(temperatureTL7(temp, c_cooling_temperature, c_accepta, len1, len2, n_colegios, coolingRate,count)){
+        //if(temperatureTL7(temp, c_cooling_temperature, c_accepta, len1, len2, n_colegios, coolingRate,count)){
         //if(temperatureTL8(temp, c_cooling_temperature, count_trials, len1, len2, coolingRate)){
         //if(temperatureTL9(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
-        //if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
+        if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
             coolingCS2(temp,coolingRate);
         }
 

@@ -275,7 +275,7 @@ double sasFunc() {
         // En el caso que el la solución actual sea mas alta intenta aceptar una peor solución en base
         // a la función acepta
         else{
-            if(metropolisAC1(costPreviousSolution,costCurrentSolution)==1){
+            if(metropolisAC3(costPreviousSolution,costCurrentSolution,Th)==1){
                 for(x=0;x<n_students;x++){
                     previousSolution[x]=currentSolution[x];
                 }
@@ -292,10 +292,10 @@ double sasFunc() {
             }
         }
 
-        if(temperatureTL7(temp, c_cooling_temperature, c_accepta, len1, len2, n_colegios, coolingRate,count)){
+        //if(temperatureTL7(temp, c_cooling_temperature, c_accepta, len1, len2, n_colegios, coolingRate,count)){
         //if(temperatureTL8(temp, c_cooling_temperature, count_trials, len1, len2, coolingRate)){
         //if(temperatureTL9(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
-        //if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
+        if(temperatureTL11(temp, c_cooling_temperature, count_trials, len3, len4, coolingRate)){
             coolingCS2(temp,coolingRate);
         }
 

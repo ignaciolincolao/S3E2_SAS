@@ -1,7 +1,7 @@
-coolingrates=(0.98 0.989 0.998)
+coolingrates=(0.98 0.998)
 temp_inital=(100000.0 1000.0 10.0)
-len2array=(2.0 85.0 280.0)
-Ths=(1.1 1.01 1.001)
+len2array=(85.0 280.0)
+Ths=(1.01 1.001)
 
 mkdir -p "./save_exp"
 cd ./build

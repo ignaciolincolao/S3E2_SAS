@@ -4,12 +4,12 @@ Primer distancia: 3.12456
 Primer Segregación: 0.555358
 Primer CostoCupo: 0.320124
 --------------- Resultado Final ----------------
-Numero de Ciclos 104490
-Costo de la solución previa: 0.959927
-Costo de la mejor solución: 0.395524
-Costo de la solución actual: 0.959927
-Tiempo de ejecución de SA: 3.641244
-distancia: 3.125583818
-Segregación: 0.554630852
-CostoCupo: 0.318075129
+Numero de Ciclos 1885131
+Costo de la solución previa: 0.0645344
+Costo de la mejor solución: 0.0645344
+Costo de la solución actual: 0.0646053
+Tiempo de ejecución de SA: 81.545919
+distancia: 3.821766571
+Segregación: 0.002599930
+CostoCupo: 0.026158606
 --------------- Finalizo con exito ----------------
